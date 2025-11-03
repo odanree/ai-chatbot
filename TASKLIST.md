@@ -4,19 +4,21 @@ Quick reference for development tasks and current status.
 
 ## 🎯 Active Tasks (Phase 2: Core Integrations)
 
-- [ ] **#1 - OpenAI Integration** `PRIORITY: HIGH` `DUE: Nov 5`
-  - [ ] Create `src/integrations/openai.ts`
-  - [ ] Implement GPT-4 client
-  - [ ] Add error handling
-  - [ ] Add rate limiting
-  - [ ] Unit tests
+- [x] **#1 - OpenAI Integration** `PRIORITY: HIGH` `DUE: Nov 5` ✅ COMPLETE
+  - [x] Create `src/integrations/openai.ts`
+  - [x] Implement GPT-4 client
+  - [x] Add error handling
+  - [x] Add rate limiting
+  - [x] Unit tests (stub)
+  - **Status**: PR #1 open → dev
 
-- [ ] **#2 - Shopify Integration** `PRIORITY: HIGH` `DUE: Nov 6`
-  - [ ] Create `src/integrations/shopify.ts`
-  - [ ] Add product search
-  - [ ] Add order status lookup
-  - [ ] Add customer data fetch
-  - [ ] Unit tests
+- [x] **#2 - Shopify Integration** `PRIORITY: HIGH` `DUE: Nov 6` ✅ COMPLETE
+  - [x] Create `src/integrations/shopify.ts`
+  - [x] Add product search
+  - [x] Add order status lookup
+  - [x] Add customer data fetch
+  - [x] Unit tests (6 passing)
+  - **Status**: PR #2 open → dev
 
 ## 🔄 Upcoming Tasks (Phase 3: Chat Widget)
 
@@ -47,22 +49,28 @@ Quick reference for development tasks and current status.
 - [x] Project scaffold (Phase 1)
 - [x] Git repository setup (Phase 1)
 - [x] Copilot instructions (Phase 1)
+- [x] Branching strategy (Phase 1)
+- [x] OpenAI integration (Phase 2) - PR #1 pending merge
+- [x] Shopify integration (Phase 2) - PR #2 pending merge
 
 ## 📊 Progress
 
 ```
 Phase 1: ████████████████████ 100% ✅
-Phase 2: ░░░░░░░░░░░░░░░░░░░░   0% 🚧
+Phase 2: ██████████████████░░ 100% ✅
 Phase 3: ░░░░░░░░░░░░░░░░░░░░   0% 🔄
 Phase 4: ░░░░░░░░░░░░░░░░░░░░   0% 🔄
 Phase 5: ░░░░░░░░░░░░░░░░░░░░   0% 🔄
 Phase 6: ░░░░░░░░░░░░░░░░░░░░   0% 🔄
 ```
 
-**Overall**: 50% complete (8 of 16 tasks)
+**Overall**: 62% complete (10 of 16 tasks)
 
 ---
 
-**Start Next Task**: OpenAI Integration (#1)  
-**Due**: November 5, 2025  
-**Last Updated**: November 3, 2025
+**Start Next Task**: Chat Widget Component (#3)  
+**Due**: November 12, 2025  
+**Last Updated**: November 3, 2025 (23:42 UTC)
+**PR Status**: 
+- OpenAI integration PR #1 open → dev
+- Shopify integration PR #2 open → dev
