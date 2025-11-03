@@ -12,12 +12,13 @@ Quick reference for development tasks and current status.
   - [x] Unit tests (stub)
   - **Status**: PR #1 open → dev
 
-- [ ] **#2 - Shopify Integration** `PRIORITY: HIGH` `DUE: Nov 6`
-  - [ ] Create `src/integrations/shopify.ts`
-  - [ ] Add product search
-  - [ ] Add order status lookup
-  - [ ] Add customer data fetch
-  - [ ] Unit tests
+- [x] **#2 - Shopify Integration** `PRIORITY: HIGH` `DUE: Nov 6` ✅ COMPLETE
+  - [x] Create `src/integrations/shopify.ts`
+  - [x] Add product search
+  - [x] Add order status lookup
+  - [x] Add customer data fetch
+  - [x] Unit tests (6 passing)
+  - **Status**: PR #2 open → dev
 
 ## 🔄 Upcoming Tasks (Phase 3: Chat Widget)
 
@@ -50,23 +51,26 @@ Quick reference for development tasks and current status.
 - [x] Copilot instructions (Phase 1)
 - [x] Branching strategy (Phase 1)
 - [x] OpenAI integration (Phase 2) - PR #1 pending merge
+- [x] Shopify integration (Phase 2) - PR #2 pending merge
 
 ## 📊 Progress
 
 ```
 Phase 1: ████████████████████ 100% ✅
-Phase 2: ████████░░░░░░░░░░░░  50% 🚧
+Phase 2: ██████████████████░░ 100% ✅
 Phase 3: ░░░░░░░░░░░░░░░░░░░░   0% 🔄
 Phase 4: ░░░░░░░░░░░░░░░░░░░░   0% 🔄
 Phase 5: ░░░░░░░░░░░░░░░░░░░░   0% 🔄
 Phase 6: ░░░░░░░░░░░░░░░░░░░░   0% 🔄
 ```
 
-**Overall**: 58% complete (9 of 16 tasks)
+**Overall**: 62% complete (10 of 16 tasks)
 
 ---
 
-**Start Next Task**: Shopify Integration (#2)  
-**Due**: November 6, 2025  
-**Last Updated**: November 3, 2025
-**PR Status**: OpenAI integration PR #1 open → dev
+**Start Next Task**: Chat Widget Component (#3)  
+**Due**: November 12, 2025  
+**Last Updated**: November 3, 2025 (23:42 UTC)
+**PR Status**: 
+- OpenAI integration PR #1 open → dev
+- Shopify integration PR #2 open → dev
