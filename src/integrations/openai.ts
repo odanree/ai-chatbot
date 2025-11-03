@@ -1,9 +1,22 @@
 import { OpenAI } from 'openai';
 
-// Initialize OpenAI client
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+// Initialize OpenAI client (lazy initialization)
+let openai: OpenAI | null = null;
+
+function getOpenAIClient(): OpenAI {
+  if (!openai) {
+    if (!process.env.OPENAI_API_KEY) {
+      const error = new Error('OPENAI_API_KEY environment variable is not set');
+      (error as any).code = 'MISSING_API_KEY';
+      (error as any).status = 500;
+      throw error;
+    }
+    openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
+  }
+  return openai;
+}
 
 // Type definitions
 interface ChatMessage {
@@ -93,8 +106,9 @@ export async function getAIResponse(
     ];
 
     // Call OpenAI API
+    const client: OpenAI = getOpenAIClient();
     const model: string = process.env.OPENAI_MODEL || 'gpt-3.5-turbo';
-    const response = await openai.chat.completions.create({
+    const response = await client.chat.completions.create({
       model,
       messages: messages as OpenAI.Chat.ChatCompletionMessageParam[],
       max_tokens: 500,
@@ -119,7 +133,7 @@ export async function getAIResponse(
     // Handle OpenAI errors
     if (error instanceof OpenAI.APIError) {
       const aiError: AIError = new Error(error.message);
-      aiError.code = error.code;
+      aiError.code = (error.code || 'UNKNOWN_ERROR') as string;
       aiError.status = error.status;
       throw aiError;
     }
@@ -181,8 +195,9 @@ export async function* getAIResponseStream(
     ];
 
     // Call OpenAI API with streaming
+    const client: OpenAI = getOpenAIClient();
     const model: string = process.env.OPENAI_MODEL || 'gpt-3.5-turbo';
-    const stream = await openai.chat.completions.create({
+    const stream = await client.chat.completions.create({
       model,
       messages: messages as OpenAI.Chat.ChatCompletionMessageParam[],
       max_tokens: 500,
@@ -201,7 +216,7 @@ export async function* getAIResponseStream(
     // Handle errors
     if (error instanceof OpenAI.APIError) {
       const aiError: AIError = new Error(error.message);
-      aiError.code = error.code;
+      aiError.code = (error.code || 'UNKNOWN_ERROR') as string;
       aiError.status = error.status;
       throw aiError;
     }
