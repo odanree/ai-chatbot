@@ -3,7 +3,7 @@
  * Orchestrates context management, intent recognition, and response generation
  */
 
-import { contextManager } from './context.js';
+import { contextManager, Message } from './context.js';
 import { intentRecognizer, Intent, IntentResult } from './intents.js';
 import { getAIResponse } from '../integrations/openai.js';
 import { getOrderStatus, searchProducts } from '../integrations/shopify.js';
@@ -165,14 +165,13 @@ async function handleOpenAIIntent(
 
   try {
     // Include conversation history for context
-    const messagesWithHistory = [
-      { role: 'system' as const, content: systemMessage },
-      ...history,
-      { role: 'user' as const, content: message },
-    ];
+    const messagesWithHistory: Array<{ role: 'user' | 'assistant'; content: string }> = history.map(msg => ({
+      role: msg.role,
+      content: msg.content,
+    }));
 
-    // Create a messages array that OpenAI expects
-    const aiResponse = await getAIResponse(messagesWithHistory);
+    // Call getAIResponse with the user message and history
+    const aiResponse = await getAIResponse(message, messagesWithHistory);
     const response: string = typeof aiResponse === 'string' ? aiResponse : aiResponse.message;
     return response;
   } catch (error) {
