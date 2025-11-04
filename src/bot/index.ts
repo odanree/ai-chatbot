@@ -3,10 +3,10 @@
  * Orchestrates context management, intent recognition, and response generation
  */
 
-import { contextManager, Message } from './context.js';
+import { contextManager } from './context.js';
 import { intentRecognizer, Intent, IntentResult } from './intents.js';
 import { getAIResponse } from '../integrations/openai.js';
-import { getProductInfo, getOrderStatus, searchProducts } from '../integrations/shopify.js';
+import { getOrderStatus, searchProducts } from '../integrations/shopify.js';
 
 export interface BotRequest {
   message: string;
@@ -172,7 +172,7 @@ async function handleOpenAIIntent(
     ];
 
     // Create a messages array that OpenAI expects
-    const aiResponse = await getAIResponse(message);
+    const aiResponse = await getAIResponse(messagesWithHistory);
     const response: string = typeof aiResponse === 'string' ? aiResponse : aiResponse.message;
     return response;
   } catch (error) {
