@@ -172,7 +172,7 @@ async function handleOpenAIIntent(
     ];
 
     // Create a messages array that OpenAI expects
-    const aiResponse = await getAIResponse(message);
+    const aiResponse = await getAIResponse(messagesWithHistory);
     const response: string = typeof aiResponse === 'string' ? aiResponse : aiResponse.message;
     return response;
   } catch (error) {
