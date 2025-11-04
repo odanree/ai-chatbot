@@ -3,7 +3,7 @@
  * Tests context management, intent recognition, and bot orchestration
  */
 
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { contextManager, Message, UserContext, ConversationSession } from '../src/bot/context.js';
 import { intentRecognizer, Intent, IntentResult } from '../src/bot/intents.js';
 import { processBotMessage, BotResponse } from '../src/bot/index.js';
