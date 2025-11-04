@@ -1,6 +1,6 @@
 # 🔍 Code Review Documentation
 
-Everything needed to review Phase 4 code in PR #5.
+Materials and guides for code review and PR analysis.
 
 ## 📄 Documents
 
@@ -22,12 +22,6 @@ Everything needed to review Phase 4 code in PR #5.
    - Design decisions explained
    - Questions for reviewers
 
-4. **EXPLAINER.md** (450+ lines)
-   - Phase 4 explained simply
-   - 3 core components
-   - Real-world examples
-   - Why it matters
-
 ## 🎯 Reading Paths
 
 ### For Quick Review (15 minutes)
@@ -37,12 +31,11 @@ Everything needed to review Phase 4 code in PR #5.
 ### For Thorough Review (45 minutes)
 1. PR_5_OVERVIEW.md
 2. PR_5_DETAILED_GUIDE.md
-3. Browse EXPLAINER.md
-4. Look at source code in /src/bot/
+3. Look at source code in /src/bot/
 
 ### For Learning the System (60 minutes)
-1. EXPLAINER.md
-2. PR_5_OVERVIEW.md
+1. PR_5_OVERVIEW.md
+2. PR_5_DETAILED_GUIDE.md
 3. Then read /docs/architecture/DESIGN_PATTERNS.md
 
 ## 👥 Best For

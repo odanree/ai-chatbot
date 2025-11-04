@@ -9,48 +9,44 @@
 ## 🎯 Quick Start - Choose Your Path
 
 ### 👤 I'm New - Get Up to Speed
-1. **Start**: `/docs/code-review/EXPLAINER.md` (10 min)
-2. **Then**: `/docs/planning/ROADMAP.md` (20 min)
-3. **Finally**: `/docs/architecture/DESIGN_PATTERNS.md` (20 min)
+1. **Start**: `README.md` (5 min)
+2. **Then**: `/docs/planning/ROADMAP.md` (15 min)
+3. **Finally**: `/docs/architecture/DESIGN_PATTERNS.md` (15 min)
 
-**Total: 50 minutes** → Understand entire project
+**Total: 35 minutes** → Understand core project
 
-### 👨‍💻 I'm a Developer - Let's Start Phase 5
-1. **Start**: `/docs/planning/PHASE_5_QUICK_START.md` (15 min)
-2. **Then**: `/docs/planning/PHASE_5_PLAN.md` (25 min)
-3. **Reference**: `/docs/architecture/PHASE_4_IMPLEMENTATION.md`
+### 👨‍💻 I'm a Developer - Let's Get Started
+1. **Start**: `README.md` (5 min)
+2. **Then**: `/docs/architecture/DESIGN_PATTERNS.md` (15 min)
+3. **Reference**: `/docs/planning/ROADMAP.md`
 
-**Total: 40 minutes** → Ready to code
+**Total: 20 minutes** → Ready to code
 
-### 🔍 I'm Reviewing PR #5
+### 🔍 I'm Reviewing Code
 1. **Start**: `/docs/code-review/PR_5_OVERVIEW.md` (5 min)
 2. **Then**: `/docs/code-review/PR_5_QUICK_REFERENCE.md` (5 min)
-3. **Deep**: `/docs/code-review/PR_5_DETAILED_GUIDE.md` (20 min)
-4. **Architecture**: `/docs/architecture/DESIGN_PATTERNS.md` (20 min)
+3. **Deep**: `/docs/code-review/PR_5_DETAILED_GUIDE.md` (15 min)
 
-**Total: 50 minutes** → Complete code review
+**Total: 25 minutes** → Complete code review
 
 ### 📊 I'm a Stakeholder - Show Me Status & Timeline
 1. **Start**: `/docs/status/SESSION_SUMMARY.md` (10 min)
-2. **Timeline**: `/docs/planning/ROADMAP.md` (20 min)
-3. **Overview**: `/docs/planning/PHASE_5_PLAN.md` (skip details)
+2. **Timeline**: `/docs/planning/ROADMAP.md` (15 min)
 
-**Total: 30 minutes** → Understand business impact
+**Total: 25 minutes** → Understand project status
 
 ---
 
 ## 📋 Complete Document Map
 
 ### 📂 `/docs/planning/` - Project Planning & Roadmap
-**Purpose**: Understanding the overall project timeline and strategy
+**Purpose**: Understanding the project timeline and strategy
 
 | Document | Purpose | Time | For |
 |----------|---------|------|-----|
-| `ROADMAP.md` | Complete 7-phase roadmap to v1.0 | 20 min | Everyone |
-| `PHASE_5_PLAN.md` | Detailed Phase 5 testing requirements (6 tasks) | 25 min | Developers |
-| `PHASE_5_QUICK_START.md` | Quick reference + commands for Phase 5 | 15 min | Developers |
+| `ROADMAP.md` | Complete project roadmap with phases | 15 min | Everyone |
 
-**Read When**: You want to see the big picture, timeline, or plan work
+**Read When**: You want to see the big picture or understand project timeline
 
 ---
 
@@ -59,25 +55,24 @@
 
 | Document | Purpose | Time | For |
 |----------|---------|------|-----|
-| `DESIGN_PATTERNS.md` | 4 design patterns explained (Singleton, Factory, Strategy, Auto-Cleanup) | 20 min | Developers |
-| `TYPESCRIPT_GUIDE.md` | TypeScript vs JavaScript comparison with code examples | 15 min | Developers |
-| `PHASE_4_IMPLEMENTATION.md` | Deep dive into Phase 4 implementation (context, intents, orchestration) | 20 min | Developers |
+| `DESIGN_PATTERNS.md` | 4 design patterns explained | 15 min | Developers |
+| `TYPESCRIPT_GUIDE.md` | TypeScript vs JavaScript comparison | 15 min | Developers |
 
-**Read When**: You want to understand architecture, design decisions, or code structure
+**Read When**: You want to understand architecture or code structure
 
 ---
 
 ### 📂 `/docs/code-review/` - Code Review & PR Materials
-**Purpose**: Everything needed to review Phase 4 code (PR #5)
+**Purpose**: Everything needed to review code
 
 | Document | Purpose | Time | For |
 |----------|---------|------|-----|
-| `PR_5_OVERVIEW.md` | Entry point for PR review - high level | 5 min | Reviewers |
-| `PR_5_QUICK_REFERENCE.md` | 1-page quick facts about the PR | 5 min | Busy Reviewers |
-| `PR_5_DETAILED_GUIDE.md` | File-by-file code analysis with questions | 20 min | Deep Reviewers |
-| `EXPLAINER.md` | Simple explanation of Phase 4 and why it matters | 10 min | New Team |
+| `PR_5_OVERVIEW.md` | PR entry point - high level | 5 min | Reviewers |
+| `PR_5_QUICK_REFERENCE.md` | 1-page summary | 5 min | Busy Reviewers |
+| `PR_5_DETAILED_GUIDE.md` | File-by-file code analysis | 15 min | Deep Reviewers |
+| `EXPLAINER.md` | Simple explanation of bot logic | 10 min | New Team |
 
-**Read When**: You need to review code or understand what was built
+**Read When**: You need to review code or understand current implementation
 
 ---
 
@@ -119,7 +114,7 @@
 
 ---
 
-## 🎯 Reading Paths by Role
+## � Reading Paths by Role
 
 ### Project Manager
 **Goal**: Understand status, timeline, resources
@@ -127,19 +122,18 @@
 ```
 Start → /docs/status/SESSION_SUMMARY.md
      → /docs/planning/ROADMAP.md
-     → /docs/planning/PHASE_5_PLAN.md (skim sections)
-Time: 40 minutes
+Time: 25 minutes
 ```
 
-### Developer (Starting Work)
-**Goal**: Understand system and get ready to code
+### Developer
+**Goal**: Understand system and architecture
 
 ```
-Start → /docs/code-review/EXPLAINER.md
+Start → README.md
      → /docs/architecture/DESIGN_PATTERNS.md
-     → /docs/planning/PHASE_5_QUICK_START.md
-     → /docs/planning/PHASE_5_PLAN.md
-Time: 70 minutes
+     → /docs/architecture/TYPESCRIPT_GUIDE.md
+     → /docs/planning/ROADMAP.md
+Time: 50 minutes
 ```
 
 ### Code Reviewer
@@ -150,8 +144,8 @@ Start → /docs/code-review/PR_5_OVERVIEW.md
      → /docs/code-review/PR_5_QUICK_REFERENCE.md
      → /docs/code-review/PR_5_DETAILED_GUIDE.md
      → /docs/architecture/DESIGN_PATTERNS.md
-     → Source code: src/bot/
-Time: 60 minutes
+     → Source code in /src/
+Time: 45 minutes
 ```
 
 ### Tech Lead / Architect
@@ -161,22 +155,19 @@ Time: 60 minutes
 Start → /docs/status/SESSION_SUMMARY.md
      → /docs/planning/ROADMAP.md
      → /docs/architecture/DESIGN_PATTERNS.md
-     → /docs/architecture/PHASE_4_IMPLEMENTATION.md
      → /docs/code-review/PR_5_DETAILED_GUIDE.md
-Time: 90 minutes
+Time: 60 minutes
 ```
 
 ### New Team Member
-**Goal**: Get up to speed on entire project
+**Goal**: Get up to speed on project
 
 ```
-Start → /docs/code-review/EXPLAINER.md
+Start → README.md
      → /docs/planning/ROADMAP.md
      → /docs/architecture/DESIGN_PATTERNS.md
-     → /docs/architecture/PHASE_4_IMPLEMENTATION.md
-     → /docs/architecture/TYPESCRIPT_GUIDE.md
-     → /docs/planning/PHASE_5_PLAN.md
-Time: 120 minutes
+     → /docs/code-review/
+Time: 70 minutes
 ```
 
 ---
@@ -184,9 +175,9 @@ Time: 120 minutes
 ## ✨ Document Categories
 
 ### By Priority (Read These First)
-1. 🔴 **MUST READ**: `SESSION_SUMMARY.md` - Current status
-2. 🟠 **SHOULD READ**: `ROADMAP.md` - Project timeline
-3. 🟡 **SHOULD READ**: `DESIGN_PATTERNS.md` - Architecture
+1. 🔴 **MUST READ**: `README.md` - Project overview
+2. 🟠 **SHOULD READ**: `/docs/planning/ROADMAP.md` - Project roadmap
+3. 🟡 **SHOULD READ**: `/docs/architecture/DESIGN_PATTERNS.md` - Architecture
 4. 🟢 **NICE TO READ**: Others as needed
 
 ### By Type
@@ -201,12 +192,12 @@ Time: 120 minutes
 
 | Category | Files | Lines | Purpose |
 |----------|-------|-------|---------|
-| **Planning** | 3 | 1,500+ | Timeline, roadmap, Phase 5 |
-| **Architecture** | 3 | 1,300+ | Design, patterns, implementation |
-| **Code Review** | 4 | 1,100+ | PR analysis and guides |
-| **Status** | 1 | 500+ | Session summary |
-| **Root Files** | 2 | 300+ | README, project info |
-| **TOTAL** | 13 | 4,700+ | Complete documentation |
+| **Planning** | 1 | 400+ | Roadmap |
+| **Architecture** | 2 | 900+ | Design, patterns |
+| **Code Review** | 4 | 1,000+ | PR analysis |
+| **Status** | 1 | 300+ | Session summary |
+| **Root Files** | 1 | 300+ | Index, README |
+| **TOTAL** | 9 | 2,900+ | Core documentation |
 
 ---
 
@@ -248,13 +239,10 @@ Check [DESIGN_PATTERNS](/docs/architecture/DESIGN_PATTERNS.md) for architecture
 ## 🎓 Learning Paths
 
 **Want to learn about the project?**
-→ `/docs/code-review/EXPLAINER.md` + `/docs/planning/ROADMAP.md`
+→ `README.md` + `/docs/planning/ROADMAP.md`
 
 **Want to understand the code?**
-→ `/docs/architecture/DESIGN_PATTERNS.md` + `/docs/architecture/PHASE_4_IMPLEMENTATION.md`
-
-**Want to know what's next?**
-→ `/docs/planning/PHASE_5_PLAN.md` + `/docs/planning/PHASE_5_QUICK_START.md`
+→ `/docs/architecture/DESIGN_PATTERNS.md` + `/docs/architecture/TYPESCRIPT_GUIDE.md`
 
 **Want to review the PR?**
 → `/docs/code-review/` folder (all 4 files)
