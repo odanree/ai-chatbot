@@ -12,7 +12,7 @@ if (Test-Path $envFile) {
     }
 }
 
-$API_URL = "https://ai-chatbot-5hcr004k7-danh-les-projects.vercel.app"
+$API_URL = "https://ai-chatbot-9kepot0y4-danh-les-projects.vercel.app"
 $BYPASS_TOKEN = $env:VERCEL_PROTECTION_BYPASS
 
 if (-not $BYPASS_TOKEN) {
