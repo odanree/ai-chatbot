@@ -6,7 +6,7 @@
 import { contextManager } from './context.js';
 import { intentRecognizer, Intent, IntentResult } from './intents.js';
 import { getAIResponse } from '../integrations/openai.js';
-import { getProductInfo, getOrderStatus, searchProducts } from '../integrations/shopify.js';
+import { getOrderStatus, searchProducts } from '../integrations/shopify.js';
 
 export interface BotRequest {
   message: string;
