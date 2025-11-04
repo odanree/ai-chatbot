@@ -4,6 +4,8 @@
 
 Your AI Chatbot is **successfully deployed** on Vercel at:
 - **Production URL**: https://ai-chatbot-5hcr004k7-danh-les-projects.vercel.app/
+- **Deployment Protection**: ✅ Enabled (secure)
+- **Bypass Token**: ✅ Created and available as `VERCEL_PROTECTION_BYPASS` environment variable
 
 ## What You Should See
 
@@ -22,23 +24,16 @@ When accessing the root endpoint (`/`), you should see a JSON response like this
 }
 ```
 
-## Current Issue: Deployment Protection Enabled
+## Protection Status: Configured ✅
 
-**Problem**: You're seeing an authentication page instead of the API response.
+**Deployment Protection**: Enabled on production deployment (recommended for security)
 
-**Reason**: Vercel has enabled "Deployment Protection" on your project, which requires authentication to access.
+**Bypass Token**: Created and ready to use for automation services
 
-**Solution**: Disable Deployment Protection
-
-### Steps to Disable Protection:
-
-1. Go to Vercel Dashboard: https://vercel.com/dashboard
-2. Click on the **ai-chatbot** project
-3. Click **Settings** (top menu)
-4. Go to **Protection** section (left sidebar)
-5. Look for "Deployment Protection"
-6. Click the toggle to **disable** it
-7. Confirm when prompted
+You can now access the API by including the bypass token in your requests using either:
+- HTTP header: `x-vercel-protection-bypass: YOUR_TOKEN`
+- Query parameter: `?x-vercel-protection-bypass=YOUR_TOKEN`
+- Environment variable: `VERCEL_PROTECTION_BYPASS` (automatically available in Vercel deployments)
 
 ### Alternative: Use Bypass Token for Automation (Recommended)
 
