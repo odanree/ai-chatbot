@@ -345,6 +345,10 @@ When starting work on a feature:
 **Documentation Rules:**
 - ⚠️ **DO NOT** create markdown files in root directory
 - ✅ **DO** create all documentation in `docs/` folder or subfolders
+- ✅ **KEEP MARKDOWN FILES CONCISE**: No markdown file should take longer than 10 minutes to read (target ~1,500 words max)
+  - Break long docs into multiple files
+  - Use clear headings, bullet points, and tables
+  - Examples: `PHASE5_SUMMARY.md` (quick), then `PHASE5_TESTING_PLAN.md` (detailed)
 - Root should only have: `README.md`, `ROADMAP.md`, `INDEX.md`
 - Organize docs by category: `docs/api/`, `docs/architecture/`, `docs/guides/`, etc.
 - Archive old docs in `docs/archive/` before deleting
