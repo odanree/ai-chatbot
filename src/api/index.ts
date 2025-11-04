@@ -5,6 +5,20 @@ import { getAIResponse, getRateLimitStatus } from '../integrations/openai.js';
 const app = express();
 app.use(express.json());
 
+// GET / - Welcome message
+app.get('/', (req, res) => {
+  res.json({
+    message: 'AI Chatbot API',
+    version: '0.2.1',
+    documentation: 'Send POST requests to /api/chat',
+    endpoints: {
+      chat: 'POST /api/chat - Send a message and get AI response',
+      health: 'GET /api/health - Health check',
+      rateLimit: 'GET /api/rate-limit - Check rate limit status',
+    },
+  });
+});
+
 // POST /api/chat - Get AI response
 app.post('/api/chat', async (req, res) => {
   try {
