@@ -3,7 +3,7 @@
  * Orchestrates context management, intent recognition, and response generation
  */
 
-import { contextManager, Message } from './context.js';
+import { contextManager } from './context.js';
 import { intentRecognizer, Intent, IntentResult } from './intents.js';
 import { getAIResponse } from '../integrations/openai.js';
 import { getProductInfo, getOrderStatus, searchProducts } from '../integrations/shopify.js';
