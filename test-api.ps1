@@ -1,6 +1,17 @@
 # API Deployment Test Script (PowerShell)
 # Tests the production API with bypass token
 
+# Load .env.local if it exists
+$envFile = ".env.local"
+if (Test-Path $envFile) {
+    Get-Content $envFile | Where-Object { $_ -notmatch '^\s*#' -and $_ -match '=' } | ForEach-Object {
+        $name, $value = $_.Split('=', 2)
+        $name = $name.Trim()
+        $value = $value.Trim()
+        [System.Environment]::SetEnvironmentVariable($name, $value, 'Process')
+    }
+}
+
 $API_URL = "https://ai-chatbot-5hcr004k7-danh-les-projects.vercel.app"
 $BYPASS_TOKEN = $env:VERCEL_PROTECTION_BYPASS
 

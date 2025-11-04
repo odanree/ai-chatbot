@@ -79,9 +79,15 @@ app.get('/api/rate-limit', (req, res) => {
   });
 });
 
-const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => {
-  console.log(`AI Chatbot API running on port ${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`OpenAI Model: ${process.env.OPENAI_MODEL || 'gpt-3.5-turbo'}`);
-});
+// Export for Vercel serverless
+export default app;
+
+// For local development: listen if not in serverless environment
+if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
+  const PORT: string = process.env.PORT || '4000';
+  app.listen(PORT, () => {
+    console.log(`AI Chatbot API running on port ${PORT}`);
+    console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`OpenAI Model: ${process.env.OPENAI_MODEL || 'gpt-3.5-turbo'}`);
+  });
+}
