@@ -340,6 +340,14 @@ When starting work on a feature:
 - **API Route**: Add to `src/api/index.ts`, implement handler, add types, test
 - **Integration**: Create new file in `src/integrations/xxx.ts`, add types, export functions, test
 - **Deployment**: Merge to `main`, Vercel auto-deploys
+- **Documentation**: Always create in `docs/` folder, NOT in root directory
+
+**Documentation Rules:**
+- ⚠️ **DO NOT** create markdown files in root directory
+- ✅ **DO** create all documentation in `docs/` folder or subfolders
+- Root should only have: `README.md`, `ROADMAP.md`, `INDEX.md`
+- Organize docs by category: `docs/api/`, `docs/architecture/`, `docs/guides/`, etc.
+- Archive old docs in `docs/archive/` before deleting
 
 **Files NOT to Modify**:
 - `.env.local` (user-specific, not in git)
