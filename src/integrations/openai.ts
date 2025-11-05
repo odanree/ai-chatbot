@@ -62,11 +62,13 @@ function isWithinRateLimit(): boolean {
  * Get AI response from OpenAI
  * @param message - User message
  * @param conversationHistory - Previous messages for context
+ * @param systemPrompt - Custom system prompt (optional, uses default if not provided)
  * @returns AI response with metadata
  */
 export async function getAIResponse(
   message: string,
-  conversationHistory: ChatMessage[] = []
+  conversationHistory: ChatMessage[] = [],
+  systemPrompt?: string
 ): Promise<AIResponse> {
   // Check rate limit
   if (!isWithinRateLimit()) {
@@ -93,10 +95,12 @@ export async function getAIResponse(
 
   try {
     // Build messages array with conversation history
+    const defaultSystemPrompt: string = `You are a helpful ecommerce customer support chatbot. You help customers with product questions, orders, and general support. Be concise, friendly, and helpful.`;
+    
     const messages: ChatMessage[] = [
       {
         role: 'system',
-        content: `You are a helpful ecommerce customer support chatbot. You help customers with product questions, orders, and general support. Be concise, friendly, and helpful.`,
+        content: systemPrompt || defaultSystemPrompt,
       },
       ...conversationHistory,
       {

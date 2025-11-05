@@ -1,9 +1,9 @@
 # AI Chatbot - Complete Development Roadmap
 
-**Last Updated**: November 5, 2025 (Updated: 10:15 UTC)  
-**Project Status**: 100% Complete (16 of 16 tasks) ✅  
-**Final Phase**: 6.5 (Production Deployment) - Complete ✅  
-**All Core Development**: FINISHED 🎉
+**Last Updated**: November 5, 2025 (Updated: Phase 7 Added)  
+**Project Status**: Phase 7 - Behavioral Strategy Pattern (Planning) 🎯  
+**Core Features**: 100% Complete (16 of 16 tasks) ✅  
+**Next Phase**: Customizable Chatbot Personalities
 
 ---
 
@@ -11,19 +11,20 @@
 
 ```
 Phase 1          Phase 2          Phase 3          Phase 4          Phase 5          Phase 6          Phase 7
-Foundation   Core Integration   Chat Widget      Bot Logic      Testing & QA    Deployment      Enhancements
-   ✅              ✅               ✅               ✅              ✅          ✅ ALL COMPLETE   Optional
-Nov 3        Nov 3            Nov 3            Nov 3          Nov 4-5        Nov 5 (Complete)  Future
- v0.1        v0.1            v0.2             v0.2           v0.3           v0.4              v0.5+
+Foundation   Core Integration   Chat Widget      Bot Logic      Testing & QA    Deployment    Behavioral Strategies
+   ✅              ✅               ✅               ✅              ✅          ✅ ALL COMPLETE   🎯 PLANNING
+Nov 3        Nov 3            Nov 3            Nov 3          Nov 4-5        Nov 5 (Complete)  Week 1-4
+ v0.1        v0.1            v0.2             v0.2           v0.3           v0.4             v1.0 (Planned)
 
 Timeline:
 |───────────────────────────────────────────────────────────────────────────────────|
 ├─ Completed ✅: Phase 1-6.5 (Nov 3-5)
-├─ Status: 🎉 PROJECT COMPLETE
-├─ Production Ready: YES
-└─ Next: Optional Phase 7 Enhancements
+├─ Current: Planning Phase 7 (Behavioral Strategy Pattern)
+├─ Production Ready: YES (Core features)
+└─ Next: Portfolio, Ecommerce, Support Strategies
 
-Progress: ███████████████████████████████ 100% ✅
+Progress Core: ███████████████████████████████ 100% ✅
+Progress Phase 7: ░░░░░░░░░░░░░░░░░░░░ 0% (Planning)
 ```
 
 ---
@@ -610,31 +611,388 @@ Overall: LOW RISK - Well-planned, incremental approach
 
 ---
 
+## � Phase 7: Behavioral Strategy Pattern (NEW - PLANNING)
+
+### Vision
+Create a flexible, reusable chatbot system where behavior, personality, and knowledge can be customized per use-case (portfolio, ecommerce, support, etc.) using the Strategy Pattern.
+
+### Architecture Overview
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                   AI Chatbot System                          │
+├─────────────────────────────────────────────────────────────┤
+│  Chat Widget (Frontend)                                      │
+│    └─ Sends: { message, context, strategyType }            │
+├─────────────────────────────────────────────────────────────┤
+│  API Layer (Express)                                         │
+│    └─ Route: POST /api/chat                                 │
+├─────────────────────────────────────────────────────────────┤
+│  Strategy Selector (NEW)                                     │
+│    ├─ Detects strategy from request                         │
+│    └─ Loads appropriate behavior config                     │
+├─────────────────────────────────────────────────────────────┤
+│  Behavior Strategies (NEW - Strategy Pattern)               │
+│    ├─ PortfolioStrategy                                     │
+│    ├─ EcommerceStrategy                                     │
+│    ├─ SupportStrategy                                       │
+│    └─ CustomStrategy                                        │
+├─────────────────────────────────────────────────────────────┤
+│  OpenAI Integration                                          │
+│    └─ Applies strategy's system prompt                      │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+### 7.1 - Strategy Pattern Architecture (Week 1)
+
+**Tasks:**
+- [ ] 7.1.1 - Design Strategy Interface
+  - Define IBehaviorStrategy interface
+  - Specify required methods (getSystemPrompt, getGreeting, getKnowledgeBase, etc.)
+  - Create base abstract class
+
+- [ ] 7.1.2 - Create Strategy Factory
+  - Build factory to instantiate strategies
+  - Add strategy registry
+  - Implement strategy loading logic
+
+- [ ] 7.1.3 - Update API to Use Strategies
+  - Modify /api/chat to accept strategyType
+  - Integrate strategy selection
+  - Pass strategy config to OpenAI
+
+---
+
+### 7.2 - Portfolio Strategy Implementation (Week 1)
+
+**Tasks:**
+- [ ] 7.2.1 - Portfolio System Prompt
+  - Knowledge about Danh Le's experience
+  - Tech stack details (React, TypeScript, Next.js, WordPress)
+  - Project highlights (Family Plan, eSIM delivery, etc.)
+  - Career timeline and achievements
+
+- [ ] 7.2.2 - Portfolio Greeting & Tone
+  - Professional but friendly greeting
+  - Career-focused conversation starters
+  - Suggested questions for visitors
+
+- [ ] 7.2.3 - Portfolio Knowledge Base
+  - Resume data extraction
+  - Skills and technologies
+  - GitHub/LinkedIn links
+  - Contact information
+
+**Example Portfolio Prompt:**
+```typescript
+const portfolioStrategy = {
+  systemPrompt: `You are Danh Le's AI assistant on his portfolio website.
+  
+  About Danh:
+  - Software Engineer 2 at Ultra Mobile (Mint Mobile)
+  - 12+ years experience in full-stack development
+  - Expert in React, TypeScript, Next.js, WordPress/WooCommerce
+  - Built dual-platform e-commerce systems
+  - Key projects: Family Plan builder, eSIM delivery, coverage checker
+  
+  Your role:
+  - Answer questions about Danh's experience, skills, and projects
+  - Provide links to GitHub (github.com/dtle82) and LinkedIn (linkedin.com/in/dtle82)
+  - Help visitors understand Danh's qualifications
+  - Be professional, concise, and highlight achievements
+  - Suggest contacting via webmaster@danhle.net for opportunities
+  
+  Keep responses under 100 words unless asked for details.`,
+  
+  greeting: "Hi! I'm Danh's AI assistant. Ask me about his experience, projects, or skills!",
+  
+  suggestedQuestions: [
+    "What's Danh's experience with React and Next.js?",
+    "Tell me about the Family Plan project",
+    "What technologies does Danh specialize in?",
+    "How can I contact Danh?"
+  ]
+};
+```
+
+---
+
+### 7.3 - Ecommerce Strategy Implementation (Week 2)
+
+**Tasks:**
+- [ ] 7.3.1 - Ecommerce System Prompt
+  - Product assistance focus
+  - Order tracking help
+  - Shopping recommendations
+  - Return/refund policies
+
+- [ ] 7.3.2 - Ecommerce Integrations
+  - Connect to product catalog API
+  - Order lookup functionality
+  - Inventory checks
+  - Shipping information
+
+- [ ] 7.3.3 - Ecommerce Tone & Behavior
+  - Helpful shopping assistant tone
+  - Upselling/cross-selling suggestions
+  - FAQ responses
+
+**Example Ecommerce Prompt:**
+```typescript
+const ecommerceStrategy = {
+  systemPrompt: `You are a helpful shopping assistant for [Store Name].
+  
+  Your capabilities:
+  - Help customers find products
+  - Answer questions about sizing, materials, shipping
+  - Provide order status updates
+  - Assist with returns and exchanges
+  - Suggest related products
+  
+  Tone: Friendly, helpful, solution-oriented
+  Always provide product links when recommending items.
+  If you don't know something, offer to connect them with support.`,
+  
+  greeting: "Welcome! I'm here to help you find what you need. What are you looking for today?",
+  
+  capabilities: {
+    productSearch: true,
+    orderTracking: true,
+    recommendations: true,
+    supportEscalation: true
+  }
+};
+```
+
+---
+
+### 7.4 - Support Strategy Implementation (Week 2)
+
+**Tasks:**
+- [ ] 7.4.1 - Support System Prompt
+  - Troubleshooting focus
+  - FAQ database integration
+  - Ticket creation guidance
+  - Escalation protocols
+
+- [ ] 7.4.2 - Support Knowledge Base
+  - Common issues and solutions
+  - Documentation links
+  - Contact escalation paths
+
+- [ ] 7.4.3 - Support Workflow
+  - Issue classification
+  - Solution suggestions
+  - Human handoff triggers
+
+---
+
+### 7.5 - Configuration System (Week 3)
+
+**Tasks:**
+- [ ] 7.5.1 - Strategy Config Files
+  - Create JSON/YAML config format
+  - Define schema for strategies
+  - Build config validator
+
+- [ ] 7.5.2 - Dynamic Strategy Loading
+  - Load strategies from files
+  - Hot-reload capability
+  - Environment-based configs (dev/staging/prod)
+
+- [ ] 7.5.3 - Admin Interface (Optional)
+  - Web UI to edit strategies
+  - Preview mode for testing
+  - Version control for configs
+
+**Example Config Structure:**
+```json
+{
+  "strategyType": "portfolio",
+  "version": "1.0.0",
+  "enabled": true,
+  "config": {
+    "systemPrompt": "...",
+    "greeting": "...",
+    "tone": "professional",
+    "maxResponseLength": 150,
+    "knowledgeBase": {
+      "owner": "Danh Le",
+      "role": "Software Engineer 2",
+      "company": "Ultra Mobile",
+      "skills": ["React", "TypeScript", "Next.js"],
+      "github": "github.com/dtle82",
+      "linkedin": "linkedin.com/in/dtle82",
+      "email": "webmaster@danhle.net"
+    },
+    "suggestedQuestions": [],
+    "conversationStarters": []
+  }
+}
+```
+
+---
+
+### 7.6 - Widget Customization (Week 3)
+
+**Tasks:**
+- [ ] 7.6.1 - Widget Init Options
+  - Add strategyType parameter
+  - Pass strategy config to widget
+  - Update widget UI based on strategy
+
+- [ ] 7.6.2 - Strategy-Specific UI
+  - Different colors per strategy
+  - Custom icons/branding
+  - Suggested questions display
+
+**Example Widget Init:**
+```javascript
+AIChatbot.init({
+  apiUrl: 'https://ai-chatbot-lake-eight-99.vercel.app',
+  position: 'bottom-right',
+  theme: 'light',
+  strategyType: 'portfolio', // NEW
+  strategyConfig: {          // NEW (optional override)
+    greeting: "Custom greeting",
+    brandColor: "#007bff"
+  }
+});
+```
+
+---
+
+### 7.7 - Testing & Documentation (Week 4)
+
+**Tasks:**
+- [ ] 7.7.1 - Unit Tests for Strategies
+  - Test each strategy implementation
+  - Validate system prompts
+  - Test strategy switching
+
+- [ ] 7.7.2 - Integration Tests
+  - Test end-to-end with different strategies
+  - Validate API responses
+  - Test widget behavior
+
+- [ ] 7.7.3 - Documentation
+  - Strategy development guide
+  - Configuration reference
+  - Migration guide for existing users
+  - Examples for each strategy type
+
+---
+
+## 📁 Proposed File Structure for Phase 7
+
+```
+ai-chatbot/
+├── src/
+│   ├── api/
+│   │   └── index.ts (updated with strategy support)
+│   ├── strategies/              # NEW
+│   │   ├── base/
+│   │   │   ├── IBehaviorStrategy.ts
+│   │   │   └── BaseBehaviorStrategy.ts
+│   │   ├── implementations/
+│   │   │   ├── PortfolioStrategy.ts
+│   │   │   ├── EcommerceStrategy.ts
+│   │   │   ├── SupportStrategy.ts
+│   │   │   └── CustomStrategy.ts
+│   │   ├── factory/
+│   │   │   └── StrategyFactory.ts
+│   │   └── registry/
+│   │       └── StrategyRegistry.ts
+│   ├── integrations/
+│   │   └── openai.ts (updated to use strategy prompts)
+│   └── types/
+│       └── strategy.types.ts    # NEW
+├── configs/                      # NEW
+│   ├── strategies/
+│   │   ├── portfolio.json
+│   │   ├── ecommerce.json
+│   │   └── support.json
+│   └── schema.json
+├── docs/
+│   ├── STRATEGY_PATTERN.md      # NEW
+│   ├── STRATEGY_GUIDE.md        # NEW
+│   └── EXAMPLES.md              # NEW
+└── tests/
+    └── strategies/               # NEW
+        ├── portfolio.test.ts
+        ├── ecommerce.test.ts
+        └── factory.test.ts
+```
+
+---
+
+## 🎯 Success Metrics for Phase 7
+
+- [ ] Support 3+ strategy types (Portfolio, Ecommerce, Support)
+- [ ] Zero-config strategy switching via API
+- [ ] < 100ms overhead for strategy selection
+- [ ] Config-driven (no code changes for new strategies)
+- [ ] Backward compatible with existing deployments
+- [ ] Documentation coverage > 90%
+- [ ] Test coverage > 85% for strategy code
+
+---
+
+## 🚀 Deployment Strategy for Phase 7
+
+1. **Week 1**: Deploy Portfolio Strategy (v1.0-alpha)
+   - Update danhle.net to use new portfolio strategy
+   - Maintain backward compatibility
+   - Test in production
+
+2. **Week 2**: Add Ecommerce Strategy (v1.0-beta)
+   - Available for future ecommerce integrations
+   - Test with mock data
+
+3. **Week 3-4**: Complete remaining strategies (v1.0-rc)
+   - Full documentation
+   - Complete test suite
+   - Public release
+
+4. **v1.0 Release**: Production-ready behavioral strategies
+   - All strategies tested
+   - Documentation complete
+   - Migration guide published
+
+---
+
 ## 🏁 Conclusion
 
-**Project Status**: 75% Complete, 12 of 16 core tasks done
+**Project Status**: Phase 7 (Behavioral Strategy Pattern) - Planning 🎯
 
 **Current Achievement**: 
-- ✅ Fully functional chatbot MVP
+- ✅ Phase 1-6.5 Complete (Core chatbot fully functional)
 - ✅ 34 tests passing
-- ✅ Production-ready code
+- ✅ Production-ready deployment
 - ✅ Comprehensive documentation
+- 🎯 Phase 7 roadmap defined
 
 **Path Forward**:
-1. Code review & merge Phase 4 (3 days)
-2. Execute Phase 5 testing (10 days)
-3. Execute Phase 6 deployment (10 days)
-4. Optional Phase 7 enhancements (14 days)
+1. Implement Strategy Pattern architecture (Week 1)
+2. Build Portfolio Strategy for danhle.net (Week 1)
+3. Build Ecommerce Strategy (Week 2)
+4. Build Support Strategy (Week 2)
+5. Configuration system (Week 3)
+6. Widget customization (Week 3)
+7. Testing & documentation (Week 4)
 
-**Total Timeline**: ~27 days to production, ~41 days to v1.0
+**Total Timeline**: ~4 weeks to v1.0 with behavioral strategies
 
-**Next Phase Start**: November 4-10, 2025  
-**Estimated v1.0 Release**: December 2, 2025
+**Next Phase Start**: To be determined  
+**Estimated v1.0 Release**: 4 weeks from Phase 7 start
 
 ---
 
 **Project**: AI Chatbot  
-**Last Updated**: November 3, 2025  
-**Status**: On Schedule ✅  
-**Progress**: 75% Complete  
-**Next Milestone**: Phase 5 Complete (85%)
+**Last Updated**: November 5, 2025  
+**Status**: Planning Phase 7 🎯  
+**Progress**: Core 100%, Phase 7 0% (Planning)  
+**Next Milestone**: Strategy Pattern Implementation
+```
