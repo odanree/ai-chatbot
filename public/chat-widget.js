@@ -24,6 +24,7 @@
     theme: 'light',
     width: '400px',
     height: '500px',
+    strategyType: 'default', // NEW: Strategy type
   };
 
   // Chat widget instance
@@ -33,11 +34,11 @@
   /**
    * Initialize the chat widget
    */
-  function init(config = {}) {
+  async function init(config = {}) {
     const finalConfig = { ...DEFAULT_CONFIG, ...config };
     
     // Create and inject widget
-    createWidget(finalConfig);
+    await createWidget(finalConfig);
     
     console.log('[AIChatbot] Widget initialized', finalConfig);
   }
@@ -45,7 +46,21 @@
   /**
    * Create the chat widget DOM
    */
-  function createWidget(config) {
+  async function createWidget(config) {
+    // Fetch strategy greeting
+    let greeting = 'Hello! How can I help you today?';
+    try {
+      const strategyResponse = await fetch(`${config.apiUrl}/api/strategy/${config.strategyType}`);
+      if (strategyResponse.ok) {
+        const strategyData = await strategyResponse.json();
+        if (strategyData.success && strategyData.data.greeting) {
+          greeting = strategyData.data.greeting;
+        }
+      }
+    } catch (error) {
+      console.warn('[AIChatbot] Could not fetch strategy greeting, using default');
+    }
+
     // Create container
     const container = document.createElement('div');
     container.id = 'ai-chatbot-widget';
@@ -170,7 +185,10 @@
         const response = await fetch(`${config.apiUrl}/api/chat`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message }),
+          body: JSON.stringify({ 
+            message,
+            strategyType: config.strategyType, // Send strategy type
+          }),
         });
 
         if (!response.ok) {
@@ -209,8 +227,8 @@
       config,
     };
 
-    // Add initial message
-    addMessage('assistant', 'Hello! How can I help you today?');
+    // Add initial message from strategy
+    addMessage('assistant', greeting);
   }
 
   /**
@@ -284,7 +302,7 @@
     toggle: toggleWidget,
     getHistory,
     clearHistory,
-    version: '0.2.0',
+    version: '1.0.0', // Updated for strategy pattern
   };
 
   // Auto-initialize if data attribute is present
