@@ -2,31 +2,19 @@
   "version": 2,
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "framework": "express",
-  "builds": [
-    {
-      "src": "dist/api/index.js",
-      "use": "@vercel/node",
-      "config": {
-        "maxDuration": 30,
-        "memory": 1024
-      }
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/dist/api/index.js",
-      "methods": ["GET", "POST", "OPTIONS"]
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/dist/api/index.js"
-    }
-  ],
   "env": {
     "NODE_ENV": "production"
   },
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/dist/api/index.js"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/dist/api/index.js"
+    }
+  ],
   "headers": [
     {
       "source": "/api/(.*)",
