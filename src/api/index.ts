@@ -1,13 +1,22 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { getBotResponse } from '../bot/index.js';
 import { getAIResponse, getRateLimitStatus } from '../integrations/openai.js';
 
 // Load environment variables from .env.local
 dotenv.config({ path: '.env.local' });
 
+// Get __dirname equivalent in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
 app.use(express.json());
+
+// Serve static files from public directory
+app.use(express.static(path.join(__dirname, '../../public')));
 
 // GET / - Welcome message
 app.get('/', (req, res) => {
