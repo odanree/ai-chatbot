@@ -1,19 +1,21 @@
 # AI Chatbot
 
-An intelligent, embeddable chatbot for ecommerce and customer support. Integrates with Shopify, OpenAI, and modern web frameworks.
+An intelligent, embeddable chatbot with customizable behavioral strategies. Integrates with Shopify, OpenAI, and modern web frameworks.
 
-**Status**: ✅ Production Ready & Complete  
-**Version**: v0.4.0  
-**Project Progress**: 100% Complete (16 of 16 tasks)  
+**Status**: ✅ Production Ready - Phase 7.2 Complete  
+**Version**: v1.0.0  
+**Project Progress**: Core 100% + Portfolio Strategy Complete  
 **Documentation**: See [ROADMAP.md](ROADMAP.md) for timeline | [INDEX.md](INDEX.md) for complete guide
 
 ## ✨ Features
 
-- ✅ **OpenAI Integration** - GPT-4 and GPT-3.5-turbo with streaming
+- ✅ **Behavioral Strategy Pattern** - Customizable chatbot personalities (Portfolio, Ecommerce, Support)
+- ✅ **Portfolio Strategy** - AI assistant for personal portfolio websites with resume/project knowledge
+- ✅ **OpenAI Integration** - GPT-4 and GPT-3.5-turbo with streaming and custom system prompts
 - ✅ **Shopify Integration** - Product search, order lookup via GraphQL
-- ✅ **Embeddable Chat Widget** - Self-contained JavaScript widget
+- ✅ **Embeddable Chat Widget** - Self-contained JavaScript widget with strategy type support
 - ✅ **Smart Bot Logic** - Intent recognition, context management, multi-turn conversations
-- ✅ **REST API** - `/api/chat` endpoint with TypeScript types
+- ✅ **REST API** - `/api/chat` endpoint with TypeScript types and strategy support
 - ✅ **Comprehensive Tests** - 216 passing unit/integration tests, production-ready code
 - ✅ **GitHub Actions CI/CD** - Automated testing, linting, building, deploying
 - ✅ **Vercel Deployment** - Auto-deploy on main branch, preview deployments
@@ -68,7 +70,7 @@ curl -X POST http://localhost:4000/api/chat \
 
 ## Embed Chat Widget
 
-Add to any website:
+Add to any website with customizable strategy:
 
 ```html
 <link rel="stylesheet" href="https://your-domain.com/chat-widget.css">
@@ -77,10 +79,17 @@ Add to any website:
   AIChatbot.init({
     apiUrl: 'https://your-api.com',
     position: 'bottom-right',
-    theme: 'light'
+    theme: 'light',
+    strategyType: 'portfolio' // 'portfolio', 'ecommerce', 'support', or 'default'
   });
 </script>
 ```
+
+**Available Strategies:**
+- `portfolio` - Personal portfolio assistant with resume/project knowledge
+- `ecommerce` - Shopping assistant (coming soon in Phase 7.3)
+- `support` - Customer support agent (coming soon in Phase 7.4)
+- `default` - General purpose chatbot
 
 See [docs/CHAT_WIDGET.md](docs/CHAT_WIDGET.md) for full configuration options and examples.
 
