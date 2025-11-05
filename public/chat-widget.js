@@ -178,7 +178,13 @@
         }
 
         const data = await response.json();
-        addMessage('assistant', data.response || 'I could not generate a response.');
+        
+        // Handle API response format
+        if (data.success && data.data) {
+          addMessage('assistant', data.data.message);
+        } else {
+          addMessage('assistant', 'I could not generate a response.');
+        }
       } catch (error) {
         addMessage('error', `Error: ${error.message}`);
       } finally {
