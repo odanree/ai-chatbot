@@ -1,6 +1,10 @@
 import express from 'express';
+import dotenv from 'dotenv';
 import { getBotResponse } from '../bot/index.js';
 import { getAIResponse, getRateLimitStatus } from '../integrations/openai.js';
+
+// Load environment variables from .env.local
+dotenv.config({ path: '.env.local' });
 
 const app = express();
 app.use(express.json());
@@ -84,7 +88,7 @@ export default app;
 
 // For local development: listen if not in serverless environment
 if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
-  const PORT: string = process.env.PORT || '4000';
+  const PORT: number = parseInt(process.env.PORT || '4000', 10);
   app.listen(PORT, () => {
     console.log(`AI Chatbot API running on port ${PORT}`);
     console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
