@@ -85,6 +85,22 @@ npm run build
 npm start
 ```
 
+## 🌍 Deployment
+
+Deploy to production with **Vercel** (auto-deploy on main branch):
+
+```bash
+# Quick setup (5 minutes)
+vercel link
+vercel --prod
+```
+
+**Complete Guides**:
+- **[docs/VERCEL_QUICK_SETUP.md](docs/VERCEL_QUICK_SETUP.md)** - 5-minute setup
+- **[docs/VERCEL_DEPLOYMENT_GUIDE.md](docs/VERCEL_DEPLOYMENT_GUIDE.md)** - Complete guide
+
+See [.github/BRANCHING_STRATEGY.md](.github/BRANCHING_STRATEGY.md) for CI/CD workflow.
+
 ## Architecture
 
 - **Backend**: Express.js + TypeScript + Node.js 18+
@@ -112,6 +128,15 @@ See [docs/architecture.md](docs/architecture.md) for detailed architecture overv
 | **[docs/DELIVERABLES.md](docs/DELIVERABLES.md)** | Complete file listing |
 
 **Status**: ✅ 215 tests passing (99.5%) | ~20 second execution time | Production-ready
+
+### Phase 6: Deployment (In Progress)
+
+| Document | Purpose |
+|----------|---------|
+| **[docs/VERCEL_QUICK_SETUP.md](docs/VERCEL_QUICK_SETUP.md)** | 5-minute Vercel setup |
+| **[docs/VERCEL_DEPLOYMENT_GUIDE.md](docs/VERCEL_DEPLOYMENT_GUIDE.md)** | Complete deployment guide |
+
+**Status**: 🟡 In Progress | Vercel configured | Ready for deployment
 
 ### Quick Links
 
