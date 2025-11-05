@@ -1,11 +1,54 @@
 {
   "version": 2,
+  "projectId": "prj_ai_chatbot_prod",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "framework": "express",
   "builds": [
-    { "src": "dist/api/index.js", "use": "@vercel/node" }
+    {
+      "src": "dist/api/index.js",
+      "use": "@vercel/node",
+      "config": {
+        "maxDuration": 30,
+        "memory": 1024
+      }
+    }
   ],
   "routes": [
-    { "src": "/api/(.*)", "dest": "/dist/api/index.js" },
-    { "src": "/(.*)", "dest": "/dist/api/index.js" }
+    {
+      "src": "/api/(.*)",
+      "dest": "/dist/api/index.js",
+      "methods": ["GET", "POST", "OPTIONS"]
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/dist/api/index.js"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  },
+  "envFile": ".env.production",
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        }
+      ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/api/chat"
+    }
   ]
 }
 
