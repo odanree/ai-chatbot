@@ -85,14 +85,48 @@ npm run build
 npm start
 ```
 
+### Run with Docker
+
+```bash
+# Build image
+docker build -t ai-chatbot:latest .
+
+# Run container
+docker run -d \
+  -e OPENAI_API_KEY=sk-... \
+  -e SHOPIFY_STORE_DOMAIN=odanree.myshopify.com \
+  -e SHOPIFY_STOREFRONT_ACCESS_TOKEN=... \
+  -e SHOPIFY_ADMIN_API_TOKEN=... \
+  -p 3000:3000 \
+  ai-chatbot:latest
+
+# Or with docker-compose
+docker-compose up -d
+```
+
 ## 🌍 Deployment
 
+### Vercel (Recommended)
 Deploy to production with **Vercel** (auto-deploy on main branch):
 
 ```bash
 # Quick setup (5 minutes)
 vercel link
 vercel --prod
+```
+
+### Docker
+Package for container deployment:
+
+```bash
+# Build image
+docker build -t ai-chatbot:latest .
+
+# Run locally
+docker run -p 3000:3000 ai-chatbot:latest
+
+# Push to registry
+docker push yourusername/ai-chatbot:latest
 ```
 
 **Complete Guides**:
@@ -133,10 +167,12 @@ See [docs/architecture.md](docs/architecture.md) for detailed architecture overv
 
 | Document | Purpose |
 |----------|---------|
+| **[docs/DOCKER_SETUP_GUIDE.md](docs/DOCKER_SETUP_GUIDE.md)** | Complete Docker guide |
+| **[docs/DOCKER_QUICK_REFERENCE.md](docs/DOCKER_QUICK_REFERENCE.md)** | Quick Docker reference |
 | **[docs/VERCEL_QUICK_SETUP.md](docs/VERCEL_QUICK_SETUP.md)** | 5-minute Vercel setup |
-| **[docs/VERCEL_DEPLOYMENT_GUIDE.md](docs/VERCEL_DEPLOYMENT_GUIDE.md)** | Complete deployment guide |
+| **[docs/VERCEL_DEPLOYMENT_GUIDE.md](docs/VERCEL_DEPLOYMENT_GUIDE.md)** | Complete Vercel guide |
 
-**Status**: 🟡 In Progress | Vercel configured | Ready for deployment
+**Status**: 🟡 In Progress | Docker configured (6.1 ✅) | Vercel configured (6.2 ✅) | Ready for deployment
 
 ### Quick Links
 

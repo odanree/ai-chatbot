@@ -1,0 +1,50 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Dependencies
+node_modules
+npm-debug.log
+npm-error.log
+yarn-debug.log
+yarn-error.log
+package-lock.json
+
+# Development
+.env.local
+.env.local.backup
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# Build outputs
+dist
+build
+
+# Testing
+coverage
+.nyc_output
+.mocha
+*.test.js
+
+# CI/CD
+.github
+.gitlab-ci.yml
+.travis.yml
+
+# Documentation
+docs
+README.md
+CONTRIBUTING.md
+LICENSE
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project
+.vercel
+.next
