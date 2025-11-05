@@ -344,21 +344,26 @@ When starting work on a feature:
 
 **Documentation Rules:**
 - ⚠️ **DO NOT** create markdown files in root directory
-- ✅ **DO** create all documentation in `docs/` folder or subfolders
+- ⚠️ **DO NOT** create phase summaries, completion reports, or session summaries
+- ⚠️ **DO NOT** create temporary planning documents (use ROADMAP.md instead)
+- ⚠️ **DO NOT** create duplicate setup/deployment guides
+- ✅ **DO** create feature documentation in `docs/` folder (e.g., CHAT_WIDGET.md)
+- ✅ **DO** create setup guides for integrations (e.g., OPENAI_SETUP.md)
+- ✅ **DO** create operational runbooks (e.g., PRODUCTION_RUNBOOK.md)
 - ✅ **KEEP MARKDOWN FILES CONCISE**: No markdown file should take longer than 10 minutes to read (target ~1,500 words max)
   - Break long docs into multiple files
   - Use clear headings, bullet points, and tables
-  - Examples: `PHASE5_SUMMARY.md` (quick), then `PHASE5_TESTING_PLAN.md` (detailed)
 - Root should only have: `README.md`, `ROADMAP.md`, `INDEX.md`
 - Organize docs by category: `docs/api/`, `docs/architecture/`, `docs/guides/`, etc.
 - Archive old docs in `docs/archive/` before deleting
 
-**Completion Reports:**
-- ⚠️ **DO NOT** create separate completion/summary reports after PRs are merged
-- These add unnecessary markdown files and commits to the repository
-- Instead: Use commit messages to document work (conventional commit format with detailed body)
-- Use `PHASE_X_SUMMARY.md` ONLY before creating the PR (for planning/tracking)
-- After PR merges: Update `ROADMAP.md` and relevant documentation, don't create new report files
+**Project Status Tracking:**
+- ⚠️ **DO NOT** create separate phase/completion/summary reports
+- ⚠️ **DO NOT** create status dashboard files (use GitHub Projects instead)
+- ✅ **DO** update `ROADMAP.md` for project status and milestones
+- ✅ **DO** use commit messages to document work (conventional commit format with detailed body)
+- ✅ **DO** use PR descriptions for detailed change summaries
+- After work completes: Update `ROADMAP.md` only, don't create new report files
 
 **Files NOT to Modify**:
 - `.env.local` (user-specific, not in git)

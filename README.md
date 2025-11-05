@@ -190,31 +190,26 @@ See [docs/architecture.md](docs/architecture.md) for detailed architecture overv
 
 **Start Here**: [INDEX.md](INDEX.md) - Complete documentation map with reading paths by role
 
-### Phase 5: Testing & QA (Latest)
+### Core Documentation
 
 | Document | Purpose |
 |----------|---------|
-| **[docs/EXECUTIVE_SUMMARY.md](docs/EXECUTIVE_SUMMARY.md)** | Quick overview - Start here! |
-| **[docs/PHASE5_SUMMARY.md](docs/PHASE5_SUMMARY.md)** | Key metrics and test results |
-| **[docs/PHASE5_TESTING_PLAN.md](docs/PHASE5_TESTING_PLAN.md)** | Complete testing strategy |
+| **[docs/EXECUTIVE_SUMMARY.md](docs/EXECUTIVE_SUMMARY.md)** | Project overview - Start here! |
 | **[docs/TEST_ARCHITECTURE.md](docs/TEST_ARCHITECTURE.md)** | Test structure & patterns |
-| **[docs/PHASE5_COMPLETION_REPORT.md](docs/PHASE5_COMPLETION_REPORT.md)** | Detailed results & analysis |
-| **[docs/PHASE5_DASHBOARD.md](docs/PHASE5_DASHBOARD.md)** | Visual status dashboard |
-| **[docs/PHASE5_COMPLETION_CHECKLIST.md](docs/PHASE5_COMPLETION_CHECKLIST.md)** | Verification checklist |
 | **[docs/DELIVERABLES.md](docs/DELIVERABLES.md)** | Complete file listing |
+| **[docs/CHAT_WIDGET.md](docs/CHAT_WIDGET.md)** | Chat widget documentation |
 
 **Status**: ✅ 216 tests passing (100%) | ~20 second execution time | Production-ready
 
-### Phase 6: Deployment (✅ COMPLETE)
+### Deployment Documentation (✅ COMPLETE)
 
 | Document | Purpose | Status |
 |----------|---------|--------|
-| **[docs/PHASE65_PLAN.md](docs/PHASE65_PLAN.md)** | Phase 6.5 strategic planning | ✅ Complete |
-| **[docs/PRODUCTION_DEPLOYMENT.md](docs/PRODUCTION_DEPLOYMENT.md)** | Deployment procedures (400+ lines) | ✅ Complete |
-| **[docs/ROLLBACK_PROCEDURES.md](docs/ROLLBACK_PROCEDURES.md)** | Rollback automation (450+ lines) | ✅ Complete |
-| **[docs/POST_DEPLOYMENT_CHECKS.md](docs/POST_DEPLOYMENT_CHECKS.md)** | Verification checklist (350+ lines) | ✅ Complete |
+| **[docs/PRODUCTION_DEPLOYMENT.md](docs/PRODUCTION_DEPLOYMENT.md)** | Deployment procedures | ✅ Complete |
+| **[docs/ROLLBACK_PROCEDURES.md](docs/ROLLBACK_PROCEDURES.md)** | Rollback automation | ✅ Complete |
+| **[docs/POST_DEPLOYMENT_CHECKS.md](docs/POST_DEPLOYMENT_CHECKS.md)** | Verification checklist | ✅ Complete |
 | **[docs/PRODUCTION_RUNBOOK.md](docs/PRODUCTION_RUNBOOK.md)** | On-call guide & emergency procedures | ✅ Complete |
-| **[docs/TEAM_PROCEDURES.md](docs/TEAM_PROCEDURES.md)** | Team training & execution (550+ lines) | ✅ Complete |
+| **[docs/TEAM_PROCEDURES.md](docs/TEAM_PROCEDURES.md)** | Team training & execution | ✅ Complete |
 | **[docs/DOCKER_SETUP_GUIDE.md](docs/DOCKER_SETUP_GUIDE.md)** | Complete Docker guide | ✅ Complete |
 | **[docs/DOCKER_QUICK_REFERENCE.md](docs/DOCKER_QUICK_REFERENCE.md)** | Quick Docker reference | ✅ Complete |
 | **[docs/VERCEL_QUICK_SETUP.md](docs/VERCEL_QUICK_SETUP.md)** | 5-minute Vercel setup | ✅ Complete |
@@ -251,17 +246,16 @@ See [docs/architecture.md](docs/architecture.md) for detailed architecture overv
 | **Project Overview** | [INDEX.md](INDEX.md) (master index) |
 | **Project Timeline** | [ROADMAP.md](ROADMAP.md) |
 | **Testing Info** | [docs/EXECUTIVE_SUMMARY.md](docs/EXECUTIVE_SUMMARY.md) |
-| **Architecture** | [/docs/architecture/DESIGN_PATTERNS.md](docs/architecture/DESIGN_PATTERNS.md) |
-| **Code Review** | [/docs/code-review/](docs/code-review/) (5 documents) |
-| **Current Status** | [/docs/status/SESSION_SUMMARY.md](docs/status/SESSION_SUMMARY.md) |
+| **Architecture** | [docs/architecture.md](docs/architecture.md) |
+| **Code Review** | [/docs/code-review/](docs/code-review/) (4 documents) |
 
 ### By Role
 
 - **👤 New to Project** → Start with [docs/EXECUTIVE_SUMMARY.md](docs/EXECUTIVE_SUMMARY.md) → [INDEX.md](INDEX.md)
-- **👨‍💻 Developer** → [docs/TEST_ARCHITECTURE.md](docs/TEST_ARCHITECTURE.md) → [/docs/architecture/](docs/architecture/)
-- **🧪 QA/Tester** → [docs/PHASE5_SUMMARY.md](docs/PHASE5_SUMMARY.md) → [docs/PHASE5_TESTING_PLAN.md](docs/PHASE5_TESTING_PLAN.md)
+- **👨‍💻 Developer** → [docs/TEST_ARCHITECTURE.md](docs/TEST_ARCHITECTURE.md) → [docs/architecture.md](docs/architecture.md)
+- **🧪 QA/Tester** → [docs/TEST_ARCHITECTURE.md](docs/TEST_ARCHITECTURE.md) → [docs/EXECUTIVE_SUMMARY.md](docs/EXECUTIVE_SUMMARY.md)
 - **🔍 Code Reviewer** → [/docs/code-review/PR_5_OVERVIEW.md](docs/code-review/PR_5_OVERVIEW.md)
-- **📊 Stakeholder** → [docs/EXECUTIVE_SUMMARY.md](docs/EXECUTIVE_SUMMARY.md)
+- **📊 Stakeholder** → [docs/EXECUTIVE_SUMMARY.md](docs/EXECUTIVE_SUMMARY.md) → [ROADMAP.md](ROADMAP.md)
 
 ## Project Status
 
