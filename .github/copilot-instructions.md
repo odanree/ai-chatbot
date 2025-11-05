@@ -353,6 +353,13 @@ When starting work on a feature:
 - Organize docs by category: `docs/api/`, `docs/architecture/`, `docs/guides/`, etc.
 - Archive old docs in `docs/archive/` before deleting
 
+**Completion Reports:**
+- ⚠️ **DO NOT** create separate completion/summary reports after PRs are merged
+- These add unnecessary markdown files and commits to the repository
+- Instead: Use commit messages to document work (conventional commit format with detailed body)
+- Use `PHASE_X_SUMMARY.md` ONLY before creating the PR (for planning/tracking)
+- After PR merges: Update `ROADMAP.md` and relevant documentation, don't create new report files
+
 **Files NOT to Modify**:
 - `.env.local` (user-specific, not in git)
 - `node_modules/` (generated)
