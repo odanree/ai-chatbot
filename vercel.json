@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "projectId": "prj_ai_chatbot_prod",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "framework": "express",
@@ -28,7 +27,6 @@
   "env": {
     "NODE_ENV": "production"
   },
-  "envFile": ".env.production",
   "headers": [
     {
       "source": "/api/(.*)",
@@ -40,14 +38,12 @@
         {
           "key": "X-Content-Type-Options",
           "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
         }
       ]
-    }
-  ],
-  "rewrites": [
-    {
-      "source": "/",
-      "destination": "/api/chat"
     }
   ]
 }
