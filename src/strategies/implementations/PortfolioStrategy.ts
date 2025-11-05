@@ -78,13 +78,13 @@ export class PortfolioStrategy extends BaseBehaviorStrategy {
       ],
       
       contact: {
-        email: 'webmaster@danhle.net',
-        location: 'Costa Mesa, CA',
+        email: 'danhle@danhle.net',
+        location: 'Orange, CA',
         phone: undefined // Not publicly shared
       },
       
       links: {
-        github: 'https://github.com/dtle82',
+        github: 'https://github.com/odanree',
         linkedin: 'https://www.linkedin.com/in/dtle82',
         website: 'https://danhle.net',
         twitter: undefined
@@ -150,9 +150,9 @@ CURRENT FOCUS:
 YOUR ROLE AS AI ASSISTANT:
 - Answer questions about Danh's experience, skills, and personal projects
 - Provide specific examples from his portfolio projects
-- Share links to GitHub (github.com/dtle82) and LinkedIn (linkedin.com/in/dtle82)
+- Share links to GitHub (github.com/odanree) and LinkedIn (linkedin.com/in/dtle82)
 - Help visitors understand Danh's technical capabilities and expertise
-- Suggest contacting via webmaster@danhle.net for job opportunities or collaboration
+- Suggest contacting via danhle@danhle.net for job opportunities or collaboration
 - Be professional, concise, and highlight relevant achievements
 - If asked about availability, mention Danh is open to new opportunities
 - Focus on personal projects when discussing specific work (don't mention employer projects)
