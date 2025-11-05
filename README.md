@@ -26,15 +26,24 @@ npm install
 
 ### 2. Configure Environment
 
-Create `.env.local`:
+Copy the example file:
+
+```bash
+cp .env.example .env.local
+```
+
+Then fill in your values:
 
 ```bash
 OPENAI_API_KEY=sk-...
 SHOPIFY_STORE_DOMAIN=your-store.myshopify.com
 SHOPIFY_STOREFRONT_ACCESS_TOKEN=...
 SHOPIFY_ADMIN_API_TOKEN=...
-PORT=4000
+PORT=3000
+NODE_ENV=development
 ```
+
+**Complete Guide**: See [docs/ENVIRONMENT_CONFIGURATION.md](docs/ENVIRONMENT_CONFIGURATION.md)
 
 ### 3. Start Development Server
 
@@ -104,7 +113,17 @@ docker run -d \
 docker-compose up -d
 ```
 
-## 🌍 Deployment
+## 🔐 Security
+
+- ✅ **Secret Management** - Environment variables only, never in code
+- ✅ **Rate Limiting** - Prevent abuse and DDoS attacks
+- ✅ **Request Timeouts** - 30-second timeout for all API calls
+- ✅ **Input Validation** - Strict validation on all user input
+- ✅ **Security Headers** - HTTPS, CSP, and other protections
+
+**Complete Guide**: [docs/SECURITY_HARDENING.md](docs/SECURITY_HARDENING.md)
+
+
 
 ### Vercel (Recommended)
 Deploy to production with **Vercel** (auto-deploy on main branch):
@@ -165,14 +184,19 @@ See [docs/architecture.md](docs/architecture.md) for detailed architecture overv
 
 ### Phase 6: Deployment (In Progress)
 
-| Document | Purpose |
-|----------|---------|
-| **[docs/DOCKER_SETUP_GUIDE.md](docs/DOCKER_SETUP_GUIDE.md)** | Complete Docker guide |
-| **[docs/DOCKER_QUICK_REFERENCE.md](docs/DOCKER_QUICK_REFERENCE.md)** | Quick Docker reference |
-| **[docs/VERCEL_QUICK_SETUP.md](docs/VERCEL_QUICK_SETUP.md)** | 5-minute Vercel setup |
-| **[docs/VERCEL_DEPLOYMENT_GUIDE.md](docs/VERCEL_DEPLOYMENT_GUIDE.md)** | Complete Vercel guide |
+| Document | Purpose | Status |
+|----------|---------|--------|
+| **[docs/DOCKER_SETUP_GUIDE.md](docs/DOCKER_SETUP_GUIDE.md)** | Complete Docker guide | ✅ Complete |
+| **[docs/DOCKER_QUICK_REFERENCE.md](docs/DOCKER_QUICK_REFERENCE.md)** | Quick Docker reference | ✅ Complete |
+| **[docs/VERCEL_QUICK_SETUP.md](docs/VERCEL_QUICK_SETUP.md)** | 5-minute Vercel setup | ✅ Complete |
+| **[docs/VERCEL_DEPLOYMENT_GUIDE.md](docs/VERCEL_DEPLOYMENT_GUIDE.md)** | Complete Vercel guide | ✅ Complete |
+| **[docs/ENVIRONMENT_CONFIGURATION.md](docs/ENVIRONMENT_CONFIGURATION.md)** | Environment variables guide | ✅ **NEW** |
+| **[docs/SECURITY_HARDENING.md](docs/SECURITY_HARDENING.md)** | Security best practices | ✅ **NEW** |
+| **[docs/DATABASE_CONFIGURATION.md](docs/DATABASE_CONFIGURATION.md)** | Database setup guide | ✅ **NEW** |
+| **[.env.example](.env.example)** | Environment template | ✅ Enhanced |
+| **[.env.production.example](.env.production.example)** | Production env template | ✅ **NEW** |
 
-**Status**: 🟡 In Progress | Docker configured (6.1 ✅) | Vercel configured (6.2 ✅) | Ready for deployment
+**Phase 6.3 Status**: 🟡 In Progress | 6.1 Docker ✅ | 6.2 Vercel ✅ | 6.3 Environment Configuration (CURRENT)
 
 ### Quick Links
 
