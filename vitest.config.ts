@@ -5,8 +5,14 @@ import { fileURLToPath } from 'url';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
-// Load environment variables from .env.local  
-config({ path: resolve(__dirname, '.env.local') });
+// Load environment variables
+// In CI: uses .env.test
+// Locally: uses .env.local
+const envPath = process.env.NODE_ENV === 'test' 
+  ? resolve(__dirname, '.env.test')
+  : resolve(__dirname, '.env.local');
+
+config({ path: envPath });
 
 export default defineConfig({
   test: {

@@ -55,8 +55,6 @@ jobs:
         run: npm test
         env:
           NODE_ENV: test
-          MOCK_OPENAI: 'true'
-          MOCK_SHOPIFY: 'true'
       
       - name: Upload coverage
         uses: codecov/codecov-action@v3
