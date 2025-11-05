@@ -1,7 +1,51 @@
-# Simple Dockerfile for AI Chatbot
-FROM node:18
+# Multi-stage Dockerfile for AI Chatbot
+# Stage 1: Builder - Compile TypeScript
+FROM node:18-alpine AS builder
+
 WORKDIR /app
-COPY package.json .
-RUN npm install
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm ci --only=production && \
+    npm cache clean --force
+
+# Copy source code
 COPY . .
-CMD ["npm", "run", "dev"]
+
+# Build TypeScript to JavaScript
+RUN npm run build
+
+# Stage 2: Runtime - Production image
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Install dumb-init for proper signal handling
+RUN apk add --no-cache dumb-init
+
+# Create non-root user for security
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nodejs -u 1001
+
+# Copy compiled code and node_modules from builder
+COPY --from=builder --chown=nodejs:nodejs /app/dist ./dist
+COPY --from=builder --chown=nodejs:nodejs /app/node_modules ./node_modules
+COPY --from=builder --chown=nodejs:nodejs /app/package*.json ./
+
+# Switch to non-root user
+USER nodejs
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD node -e "require('http').get('http://localhost:3000/health', (r) => {if (r.statusCode !== 200) throw new Error(r.statusCode)})"
+
+# Expose port
+EXPOSE 3000
+
+# Use dumb-init to handle signals properly
+ENTRYPOINT ["dumb-init", "--"]
+
+# Start application in production mode
+CMD ["node", "dist/api/index.js"]
