@@ -195,6 +195,27 @@ Refs #1"
 6. Create PR from `dev` → `main` for production
 7. After approval and CI/CD passes, merge to `main`
 
+### Pull Request Guidelines
+- ✅ **KEEP PRS CONCISE**: Target 5 minute read time (~750 words max)
+  - Focus on "what changed" and "why", not implementation details
+  - Use bullet points for changes
+  - Link to issues for context
+  - Code speaks for itself - don't duplicate in description
+- ✅ **PR Description Template**:
+  ```
+  ## Changes
+  - Bullet list of changes (3-5 max)
+  
+  ## Issue
+  Fixes #123 (or link to issue)
+  
+  ## Testing
+  ✅ What was tested
+  ```
+- ⚠️ **DO NOT** write essay-style PR descriptions
+- ⚠️ **DO NOT** include detailed implementation explanations
+- ⚠️ **DO NOT** paste large code snippets (code is in the diff)
+
 ---
 
 ## 🔐 Integrations
