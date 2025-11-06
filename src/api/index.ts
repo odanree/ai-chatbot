@@ -22,8 +22,10 @@ const allowedOrigins = [
   'https://www.danhle.net',
   'http://localhost:3000', // For local testing
   'http://localhost:3001', // Shopify headless local dev
-  'https://shopify-ecommerce-git-main-odanrees-projects.vercel.app', // Vercel preview
-  'https://shopify-ecommerce-odanrees-projects.vercel.app', // Vercel production
+  'https://shopify-headless-8746.vercel.app', // Vercel production (actual deployment)
+  'https://shopify-headless-8746-git-main-danh-les-projects.vercel.app', // Vercel preview
+  'https://shopify-ecommerce-git-main-odanrees-projects.vercel.app', // Vercel preview (old org)
+  'https://shopify-ecommerce-odanrees-projects.vercel.app', // Vercel production (old org)
   'https://shopify-ecommerce.vercel.app', // Vercel production alias
 ];
 
