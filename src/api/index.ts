@@ -47,7 +47,10 @@ const allowedOrigins = [
 app.use((req, res, next) => {
   const origin = req.headers.origin;
   
-  if (origin && allowedOrigins.includes(origin)) {
+  // Allow file:// protocol (null origin) for local testing
+  if (!origin || origin === 'null') {
+    res.header('Access-Control-Allow-Origin', '*');
+  } else if (allowedOrigins.includes(origin)) {
     res.header('Access-Control-Allow-Origin', origin);
   }
   
