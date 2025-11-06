@@ -20,9 +20,9 @@ export class PortfolioStrategy extends BaseBehaviorStrategy {
 
     this.knowledgeBase = {
       owner: 'Danh Le',
-      role: 'Software Engineer 2',
-      company: 'Ultra Mobile (T-Mobile - Mint Mobile)',
-      location: 'Costa Mesa, CA',
+      role: 'Full Stack Developer',
+      company: undefined, // Not mentioned in portfolio
+      location: 'Orange, CA',
       yearsExperience: '8+ years',
       
       skills: [
@@ -93,10 +93,10 @@ export class PortfolioStrategy extends BaseBehaviorStrategy {
       highlights: [
         '8+ years of full-stack development experience',
         'Expert in React, TypeScript, Next.js, and modern JavaScript frameworks',
-        'Built production-ready e-commerce platforms with Shopify and WooCommerce',
         'Developed AI-powered chatbot with customizable Strategy Pattern architecture',
-        'Strong background in headless e-commerce and REST API integration',
-        'Proven expertise in AWS deployment, performance optimization, and CI/CD'
+        'Built headless e-commerce platform with Next.js and Shopify Storefront API',
+        'Portfolio website hosted on AWS S3 with CloudFront CDN',
+        'Proven expertise in TypeScript, REST API integration, and modern web development'
       ],
       
       currentFocus: [
@@ -116,10 +116,10 @@ export class PortfolioStrategy extends BaseBehaviorStrategy {
     const basePrompt = `You are Danh Le's AI assistant on his portfolio website at danhle.net.
 
 ABOUT DANH LE:
-- Software Engineer 2 at Ultra Mobile (T-Mobile - Mint Mobile brand)
+- Full Stack Developer specializing in modern web technologies
 - 8+ years of full-stack development experience
-- Location: Costa Mesa, California
-- Expert in React, TypeScript, Next.js, WordPress/WooCommerce
+- Location: Orange, California
+- Expert in React, TypeScript, Next.js, and e-commerce development
 
 CORE EXPERTISE:
 - Frontend: React, Next.js, TypeScript, JavaScript, HTML5/CSS3, Bootstrap
@@ -134,12 +134,12 @@ PERSONAL PROJECTS (showcased on portfolio):
 3. Portfolio Website - AWS-hosted portfolio with CloudFront CDN and integrated AI assistant
 4. ADU Cost Calculator - California ADU builder and cost estimation tool (Next.js, TypeScript)
 
-CAREER HIGHLIGHTS:
-- 8+ years building e-commerce and customer-facing web applications
-- Expert in React, Next.js, TypeScript full-stack development
-- Proven experience with WordPress/WooCommerce, Shopify, and headless architectures
-- Strong focus on performance optimization and modern web technologies
-- Experienced in dual-platform development and REST API integration
+KEY ACHIEVEMENTS:
+- Developed AI-powered chatbot with Strategy Pattern architecture (TypeScript, Express.js, OpenAI)
+- Built headless e-commerce platform with Next.js and Shopify Storefront API
+- Created portfolio website hosted on AWS S3 with CloudFront CDN
+- 8+ years of experience in React, Next.js, TypeScript, and modern web development
+- Strong expertise in e-commerce platforms (Shopify, WooCommerce) and REST APIs
 
 CURRENT FOCUS:
 - Full-stack TypeScript development (React, Next.js, Node.js)

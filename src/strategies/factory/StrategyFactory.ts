@@ -6,6 +6,7 @@
 import { IBehaviorStrategy } from '../base/IBehaviorStrategy.js';
 import { StrategyType } from '../../types/strategy.types.js';
 import { PortfolioStrategy } from '../implementations/PortfolioStrategy.js';
+import { EcommerceStrategy } from '../implementations/EcommerceStrategy.js';
 
 export class StrategyFactory {
   /**
@@ -20,16 +21,15 @@ export class StrategyFactory {
         return new PortfolioStrategy();
       
       case 'ecommerce':
-        // TODO: Implement in Phase 7.3
-        throw new Error('Ecommerce strategy not yet implemented');
+        return new EcommerceStrategy();
       
       case 'support':
         // TODO: Implement in Phase 7.4
         throw new Error('Support strategy not yet implemented');
       
       case 'default':
-        // Return portfolio as default for now
-        return new PortfolioStrategy();
+        // Return ecommerce as default for general use
+        return new EcommerceStrategy();
       
       default:
         throw new Error(`Unknown strategy type: ${type}`);
@@ -40,7 +40,7 @@ export class StrategyFactory {
    * Get list of available strategy types
    */
   static getAvailableStrategies(): StrategyType[] {
-    return ['portfolio', 'default'];
+    return ['portfolio', 'ecommerce', 'default'];
   }
 
   /**
