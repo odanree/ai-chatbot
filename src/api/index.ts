@@ -1,5 +1,9 @@
-import express from 'express';
 import dotenv from 'dotenv';
+
+// Load environment variables FIRST before other imports
+dotenv.config({ path: '.env.local' });
+
+import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { getBotResponse } from '../bot/index.js';
@@ -8,8 +12,10 @@ import { searchProducts, getProductInfo } from '../integrations/shopify.js';
 import { StrategyFactory } from '../strategies/factory/StrategyFactory.js';
 import { StrategyType } from '../types/strategy.types.js';
 
-// Load environment variables from .env.local
-dotenv.config({ path: '.env.local' });
+// Debug: Log Shopify env vars
+console.log('[Debug] SHOPIFY_STORE_DOMAIN:', process.env.SHOPIFY_STORE_DOMAIN || 'NOT SET');
+console.log('[Debug] SHOPIFY_STOREFRONT_ACCESS_TOKEN:', process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN ? 'SET' : 'NOT SET');
+console.log('[Debug] SHOPIFY_ADMIN_API_TOKEN:', process.env.SHOPIFY_ADMIN_API_TOKEN ? 'SET' : 'NOT SET');
 
 // Get __dirname equivalent in ES modules
 const __filename = fileURLToPath(import.meta.url);
