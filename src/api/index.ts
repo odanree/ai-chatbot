@@ -126,8 +126,8 @@ app.post('/api/chat', async (req, res) => {
           
           if (products && products.length > 0) {
             contextInfo = `\n\nAVAILABLE PRODUCTS (from Shopify):\n${products.map(p => 
-              `- ${p.title}: $${p.price} (ID: ${p.id})`
-            ).join('\n')}\n\nUse this product data to answer the customer's question about "${message}". Be specific about which products match their request.`;
+              `- ${p.title}: $${p.price}${p.url ? ` (URL: ${p.url})` : ''} (ID: ${p.id})`
+            ).join('\n')}\n\nUse this product data to answer the customer's question about "${message}". Include the actual product URLs in your response so customers can click through to view or purchase.`;
             
             console.log(`[Chat API] Found ${products.length} products`);
           }

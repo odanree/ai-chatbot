@@ -5,6 +5,8 @@ interface ShopifyProduct {
   id: string;
   title: string;
   description: string;
+  handle?: string;
+  url?: string;
   price: string;
   image?: string;
   variants?: ShopifyVariant[];
@@ -203,6 +205,8 @@ export async function searchProducts(query: string, limit: number = 10): Promise
               id
               title
               description
+              handle
+              onlineStoreUrl
               priceRange {
                 minVariantPrice {
                   amount
@@ -237,6 +241,8 @@ export async function searchProducts(query: string, limit: number = 10): Promise
         id: product.id as string,
         title: product.title as string,
         description: product.description as string,
+        handle: product.handle as string,
+        url: product.onlineStoreUrl as string,
         price: minPrice as string,
         image: ((product.featuredImage as Record<string, unknown>)?.url) as string | undefined,
       };
