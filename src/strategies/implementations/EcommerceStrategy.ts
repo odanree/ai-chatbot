@@ -23,19 +23,28 @@ export class EcommerceStrategy extends BaseBehaviorStrategy {
 
   getKnowledgeBase(): KnowledgeBase {
     // Ecommerce strategy uses minimal static knowledge
-    // Product data comes dynamically from Shopify API
+    // Product data comes dynamically from Shopify API (Storefront + Admin APIs)
     return {
       owner: 'Store',
       role: 'Ecommerce Platform',
-      skills: ['Product Search', 'Cart Management', 'Order Tracking', 'Customer Support'],
+      skills: [
+        'Product Search', 
+        'Cart Management', 
+        'Order Tracking', 
+        'Customer Support',
+        'Inventory Information',
+        'Order History Lookup'
+      ],
       projects: [],
       contact: {},
       links: {},
       highlights: [
         'Browse our product catalog',
         'Secure checkout process',
+        'Real-time order tracking',
         'Fast shipping',
-        'Easy returns and exchanges'
+        'Easy returns and exchanges',
+        'Customer order history access'
       ]
     };
   }
@@ -45,43 +54,72 @@ export class EcommerceStrategy extends BaseBehaviorStrategy {
   }
 
   getDescription(): string {
-    return 'Helpful shopping assistant for ecommerce stores. Assists with product questions, sizing, cart help, and order inquiries.';
+    return 'Helpful shopping assistant for ecommerce stores. Assists with product questions, sizing, cart help, order tracking, and customer support via Shopify Admin API.';
   }
 
   getGreeting(): string {
-    return "Hi! I'm your shopping assistant. I can help you find products, answer questions about sizing and features, or assist with your order. What can I help you with today?";
+    return "Hi! I'm your shopping assistant. I can help you find products, track your order, answer questions about sizing and features, or look up your order history. What can I help you with today?";
   }
 
   getSystemPrompt(): string {
-    return `You are a helpful shopping assistant for an online store. Your role is to:
+    return `You are a helpful shopping assistant for an online store with access to Shopify Admin API. Your role is to:
 
 1. **Product Help**: Answer questions about products, features, sizes, materials, and availability
+   - Use Shopify Storefront API to search products and get details
+   - Provide accurate product information including pricing and variants
+
 2. **Shopping Guidance**: Help customers find the right products for their needs
-3. **Cart Assistance**: Guide users through adding items to cart and checkout process
-4. **Order Support**: Provide information about shipping, returns, and order tracking
-5. **Recommendations**: Suggest products based on customer preferences
+   - Ask clarifying questions to understand customer preferences
+   - Suggest products based on their requirements
+
+3. **Order Tracking**: Provide real-time order status and shipping information
+   - Use Shopify Admin API to look up orders by order number
+   - Share fulfillment status, tracking info, and estimated delivery
+   - Example: "Can you check order #1234?" or "Where is my order?"
+
+4. **Customer Support**: Access customer order history and account information
+   - Use Shopify Admin API to look up customers by email
+   - View past orders and help with order-related questions
+   - Example: "What are my recent orders?" or "Can you find my last purchase?"
+
+5. **Cart Assistance**: Guide users through adding items to cart and checkout process
+   - Help with product selection and cart management
+   - Answer checkout and payment questions
+
+6. **Recommendations**: Suggest products based on customer preferences
+   - Provide personalized product suggestions
+   - Compare products and highlight features
+
+Available Shopify Integrations:
+- getProductInfo(productId) - Fetch product details, variants, pricing
+- searchProducts(query) - Search for products by keyword
+- getOrderStatus(orderId) - Look up order status, fulfillment, and line items
+- getCustomerData(email) - Access customer order history and account info
 
 Guidelines:
 - Be friendly, patient, and enthusiastic about helping shoppers
 - Ask clarifying questions to understand customer needs
-- Provide accurate product information when available
-- Encourage browsing and exploring the product catalog
+- Provide accurate product information from Shopify APIs
+- For order tracking, ask for order number or email address
 - Keep responses concise and action-oriented
 - Use a warm, conversational tone
-- If you don't know specific product details, be honest and suggest browsing the product pages
+- If you need more info (order #, email), politely ask the customer
 - Guide users to complete their purchase when appropriate
+- Respect customer privacy - only share order info with verified customers
 
-Remember: You're here to make shopping easy and enjoyable!`;
+Remember: You're here to make shopping easy and enjoyable with powerful order tracking and customer support capabilities!`;
   }
 
   getCapabilities(): string[] {
     return [
-      'Product information and recommendations',
+      'Product search and recommendations',
       'Size and fit guidance',
       'Cart and checkout assistance',
-      'Order status and shipping information',
+      'Real-time order tracking (via Shopify Admin API)',
+      'Customer order history lookup',
+      'Shipping status and delivery estimates',
       'Returns and exchange policies',
-      'Product comparisons',
+      'Product comparisons and details',
       'Gift recommendations',
       'General shopping support'
     ];
@@ -92,11 +130,15 @@ Remember: You're here to make shopping easy and enjoyable!`;
       'What products do you have?',
       'Do you have this in a larger size?',
       'What\'s your return policy?',
+      'Where is my order #1234?',
+      'Can you track my order?',
+      'What are my recent orders? (email: customer@example.com)',
       'How long does shipping take?',
       'Can you help me find a gift?',
       'What\'s the difference between these products?',
       'Do you have any sales or promotions?',
-      'How do I track my order?'
+      'What\'s the status of order #5678?',
+      'Can you look up my order history?'
     ];
   }
 
@@ -106,6 +148,7 @@ Remember: You're here to make shopping easy and enjoyable!`;
       'size_question',
       'cart_help',
       'order_status',
+      'order_tracking',
       'shipping_info',
       'return_policy',
       'price_question',
@@ -113,7 +156,9 @@ Remember: You're here to make shopping easy and enjoyable!`;
       'recommendation',
       'gift_suggestion',
       'checkout_help',
-      'payment_question'
+      'payment_question',
+      'customer_lookup',
+      'order_history'
     ];
 
     return ecommerceIntents.includes(intent.toLowerCase());
@@ -123,9 +168,17 @@ Remember: You're here to make shopping easy and enjoyable!`;
     // Add shopping-friendly enhancements
     let enhanced = response;
 
-    // Add helpful shopping CTAs if appropriate
-    if (context?.products && context.products.length > 0) {
+    // Add order tracking CTAs if order-related
+    if (context?.orderId || context?.orderStatus) {
+      enhanced += '\n\nNeed help with anything else regarding your order?';
+    }
+    // Add shopping CTAs if product-related
+    else if (context?.products && context.products.length > 0) {
       enhanced += '\n\nWould you like to browse our products or need help with anything else?';
+    }
+    // Add customer support CTA if customer data is involved
+    else if (context?.customer || context?.email) {
+      enhanced += '\n\nIs there anything else I can help you with today?';
     }
 
     return enhanced;
