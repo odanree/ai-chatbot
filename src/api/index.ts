@@ -4,6 +4,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { getBotResponse } from '../bot/index.js';
 import { getAIResponse, getRateLimitStatus } from '../integrations/openai.js';
+import { searchProducts, getProductInfo } from '../integrations/shopify.js';
 import { StrategyFactory } from '../strategies/factory/StrategyFactory.js';
 import { StrategyType } from '../types/strategy.types.js';
 
@@ -93,9 +94,49 @@ app.post('/api/chat', async (req, res) => {
     }
 
     // Get system prompt from strategy
-    const systemPrompt = strategy.getSystemPrompt();
+    let systemPrompt = strategy.getSystemPrompt();
+    let contextInfo = '';
 
-    // Get AI response with custom system prompt
+    // For ecommerce strategy, try to search products if message mentions product keywords
+    if (strategy.getType() === 'ecommerce') {
+      const productKeywords = ['shirt', 't-shirt', 'tshirt', 'hoodie', 'pants', 'shoes', 'product', 'find', 'search', 'buy', 'large', 'medium', 'small', 'blue', 'red', 'black'];
+      const messageText = message.toLowerCase();
+      
+      const hasProductKeyword = productKeywords.some(keyword => messageText.includes(keyword));
+      
+      if (hasProductKeyword) {
+        try {
+          console.log(`[Chat API] Searching Shopify products for: "${message}"`);
+          
+          // Extract potential search terms (simplified - AI will refine this)
+          let searchTerm = 'shirt'; // default
+          if (messageText.includes('hoodie')) searchTerm = 'hoodie';
+          else if (messageText.includes('pants')) searchTerm = 'pants';
+          else if (messageText.includes('shoes')) searchTerm = 'shoes';
+          else if (messageText.includes('shirt') || messageText.includes('t-shirt') || messageText.includes('tshirt')) searchTerm = 'shirt';
+          
+          const products = await searchProducts(searchTerm, 5);
+          
+          if (products && products.length > 0) {
+            contextInfo = `\n\nAVAILABLE PRODUCTS (from Shopify):\n${products.map(p => 
+              `- ${p.title}: $${p.price} (ID: ${p.id})`
+            ).join('\n')}\n\nUse this product data to answer the customer's question about "${message}". Be specific about which products match their request.`;
+            
+            console.log(`[Chat API] Found ${products.length} products`);
+          }
+        } catch (error) {
+          console.error('[Chat API] Shopify search error:', error);
+          // Continue with AI response even if Shopify fails
+        }
+      }
+    }
+
+    // Append product context to system prompt if available
+    if (contextInfo) {
+      systemPrompt += contextInfo;
+    }
+
+    // Get AI response with custom system prompt and product context
     const response = await getAIResponse(message, conversationHistory || [], systemPrompt);
     
     res.json({
