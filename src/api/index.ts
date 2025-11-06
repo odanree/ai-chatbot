@@ -1,7 +1,14 @@
 import dotenv from 'dotenv';
+import { existsSync } from 'fs';
 
 // Load environment variables FIRST before other imports
-dotenv.config({ path: '.env.local' });
+// In Docker, environment variables are passed directly via docker-compose
+// Locally, load from .env.local if it exists
+if (existsSync('.env.local')) {
+  dotenv.config({ path: '.env.local' });
+} else if (process.env.NODE_ENV !== 'production') {
+  console.warn('[Warning] .env.local not found, using environment variables');
+}
 
 import express from 'express';
 import path from 'path';
@@ -238,8 +245,8 @@ app.get('/api/rate-limit', (req, res) => {
 // Export for Vercel serverless
 export default app;
 
-// For local development: listen if not in serverless environment
-if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
+// For local development and Docker: listen if not in Vercel serverless environment
+if (!process.env.VERCEL) {
   const PORT: number = parseInt(process.env.PORT || '4000', 10);
   app.listen(PORT, () => {
     console.log(`AI Chatbot API running on port ${PORT}`);

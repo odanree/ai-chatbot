@@ -23,7 +23,7 @@ An intelligent, embeddable chatbot with dual behavioral strategies and Shopify i
 - ✅ **Comprehensive Tests** - 216 passing unit/integration tests, production-ready code
 - ✅ **GitHub Actions CI/CD** - Automated testing, linting, building, deploying
 - ✅ **Vercel Deployment** - Auto-deploy on main branch, preview deployments
-- ✅ **Docker Containerization** - Multi-stage build, production-ready image
+- ✅ **Docker Containerization** - Multi-stage build with health checks, production-ready (v0.3.0)
 - ✅ **Production Deployment** - Automated rollback, health checks, monitoring
 - ✅ **Team Documentation** - Training materials, emergency procedures, runbooks
 
@@ -132,9 +132,23 @@ npm start
 
 ### Run with Docker
 
+✅ **Production-ready Docker setup complete** - Multi-stage build with health checks
+
+```bash
+# Quick start with docker-compose
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop container
+docker-compose down
+```
+
+**Or manual Docker commands:**
 ```bash
 # Build image
-docker build -t ai-chatbot:latest .
+docker build -t ai-chatbot:0.3.0 .
 
 # Run container
 docker run -d \
@@ -142,12 +156,18 @@ docker run -d \
   -e SHOPIFY_STORE_DOMAIN=odanree.myshopify.com \
   -e SHOPIFY_STOREFRONT_ACCESS_TOKEN=... \
   -e SHOPIFY_ADMIN_API_TOKEN=... \
-  -p 3000:3000 \
-  ai-chatbot:latest
-
-# Or with docker-compose
-docker-compose up -d
+  -e PORT=4000 \
+  -p 4000:4000 \
+  ai-chatbot:0.3.0
 ```
+
+**Docker Features:**
+- ✅ Multi-stage build (optimized image size)
+- ✅ Non-root user for security
+- ✅ Health checks on `/api/health`
+- ✅ Auto-restart policy
+- ✅ Production environment variables
+- ✅ Logs volume mounted for monitoring
 
 ## 🔐 Security
 
