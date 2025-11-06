@@ -16,11 +16,15 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
-// Enable CORS for portfolio website
+// Enable CORS for portfolio website and Shopify headless store
 const allowedOrigins = [
   'https://danhle.net',
   'https://www.danhle.net',
   'http://localhost:3000', // For local testing
+  'http://localhost:3001', // Shopify headless local dev
+  'https://shopify-ecommerce-git-main-odanrees-projects.vercel.app', // Vercel preview
+  'https://shopify-ecommerce-odanrees-projects.vercel.app', // Vercel production
+  'https://shopify-ecommerce.vercel.app', // Vercel production alias
 ];
 
 app.use((req, res, next) => {
