@@ -61,6 +61,14 @@
       console.warn('[AIChatbot] Could not fetch strategy greeting, using default');
     }
 
+    // Create mobile FAB (Floating Action Button)
+    const fab = document.createElement('button');
+    fab.id = 'ai-chatbot-fab';
+    fab.className = config.position;
+    fab.innerHTML = '💬';
+    fab.setAttribute('aria-label', 'Open chat');
+    fab.onclick = () => openWidget();
+
     // Create container
     const container = document.createElement('div');
     container.id = 'ai-chatbot-widget';
@@ -216,6 +224,7 @@
     container.appendChild(form);
 
     // Inject into DOM
+    document.body.appendChild(fab);
     document.body.appendChild(container);
 
     // Store references
@@ -225,6 +234,7 @@
       input,
       sendBtn,
       config,
+      fab,
     };
 
     // Add initial message from strategy
@@ -269,13 +279,36 @@
   }
 
   /**
+   * Open the widget (for mobile FAB button)
+   */
+  function openWidget() {
+    if (!chatWidget) return;
+
+    chatWidget.container.style.display = 'flex';
+    chatWidget.container.classList.add('open'); // Add class for mobile CSS
+    chatWidget.fab.style.display = 'none';
+    
+    // Focus input
+    setTimeout(() => chatWidget.input.focus(), 100);
+  }
+
+  /**
    * Toggle widget visibility
    */
   function toggleWidget() {
     if (!chatWidget) return;
 
     const isVisible = chatWidget.container.style.display !== 'none';
-    chatWidget.container.style.display = isVisible ? 'none' : 'flex';
+    
+    if (isVisible) {
+      // Close widget
+      chatWidget.container.style.display = 'none';
+      chatWidget.container.classList.remove('open'); // Remove class for mobile CSS
+      chatWidget.fab.style.display = 'flex';
+    } else {
+      // Open widget
+      openWidget();
+    }
   }
 
   /**
