@@ -38,18 +38,24 @@ interface ShopifyError extends Error {
   status?: number;
 }
 
-// Initialize Shopify client
-const SHOPIFY_DOMAIN: string = process.env.SHOPIFY_STORE_DOMAIN || '';
-const STOREFRONT_TOKEN: string = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN || '';
-const ADMIN_TOKEN: string = process.env.SHOPIFY_ADMIN_API_TOKEN || '';
-
-const STOREFRONT_API_URL = `https://${SHOPIFY_DOMAIN}/api/2024-01/graphql.json`;
-const ADMIN_API_URL = `https://${SHOPIFY_DOMAIN}/admin/api/2024-01/graphql.json`;
+/**
+ * Get Shopify configuration from environment variables
+ * Reads at runtime to ensure dotenv has loaded
+ */
+function getShopifyConfig() {
+  return {
+    SHOPIFY_DOMAIN: process.env.SHOPIFY_STORE_DOMAIN || '',
+    STOREFRONT_TOKEN: process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN || '',
+    ADMIN_TOKEN: process.env.SHOPIFY_ADMIN_API_TOKEN || '',
+  };
+}
 
 /**
  * Validate Shopify configuration
  */
 function validateShopifyConfig(): void {
+  const { SHOPIFY_DOMAIN, STOREFRONT_TOKEN } = getShopifyConfig();
+  
   if (!SHOPIFY_DOMAIN) {
     const error: ShopifyError = new Error(
       'SHOPIFY_STORE_DOMAIN environment variable is not set'
@@ -72,6 +78,9 @@ function validateShopifyConfig(): void {
  */
 async function makeStorefrontRequest(query: string, variables: Record<string, unknown> = {}): Promise<Record<string, unknown>> {
   try {
+    const { SHOPIFY_DOMAIN, STOREFRONT_TOKEN } = getShopifyConfig();
+    const STOREFRONT_API_URL = `https://${SHOPIFY_DOMAIN}/api/2024-01/graphql.json`;
+    
     const response = await fetch(STOREFRONT_API_URL, {
       method: 'POST',
       headers: {
@@ -245,6 +254,9 @@ export async function searchProducts(query: string, limit: number = 10): Promise
  * Requires Admin API token
  */
 export async function getOrderStatus(orderId: string): Promise<ShopifyOrder> {
+  const { SHOPIFY_DOMAIN, ADMIN_TOKEN } = getShopifyConfig();
+  const ADMIN_API_URL = `https://${SHOPIFY_DOMAIN}/admin/api/2024-01/graphql.json`;
+  
   if (!ADMIN_TOKEN) {
     const error: ShopifyError = new Error(
       'SHOPIFY_ADMIN_API_TOKEN environment variable is not set'
@@ -355,6 +367,9 @@ export async function getOrderStatus(orderId: string): Promise<ShopifyOrder> {
  * Requires Admin API token
  */
 export async function getCustomerData(email: string): Promise<Record<string, unknown>> {
+  const { SHOPIFY_DOMAIN, ADMIN_TOKEN } = getShopifyConfig();
+  const ADMIN_API_URL = `https://${SHOPIFY_DOMAIN}/admin/api/2024-01/graphql.json`;
+  
   if (!ADMIN_TOKEN) {
     const error: ShopifyError = new Error(
       'SHOPIFY_ADMIN_API_TOKEN environment variable is not set'
