@@ -153,6 +153,19 @@ app.post('/api/chat', async (req, res) => {
     // Get AI response with custom system prompt and product context
     const response = await getAIResponse(message, conversationHistory || [], systemPrompt);
     
+    // Analytics: Log conversation metrics
+    console.log(JSON.stringify({
+      event: 'chat_message',
+      timestamp: new Date().toISOString(),
+      strategy: strategy.getType(),
+      messageLength: message.length,
+      hasHistory: !!conversationHistory && conversationHistory.length > 0,
+      historyLength: conversationHistory?.length || 0,
+      responseTime: Date.now(), // Can calculate delta if needed
+      hasContext: contextInfo.length > 0,
+      success: true,
+    }));
+
     res.json({
       success: true,
       data: {
@@ -163,6 +176,16 @@ app.post('/api/chat', async (req, res) => {
     });
   } catch (error) {
     console.error('Chat API error:', error);
+    
+    // Analytics: Log error
+    console.log(JSON.stringify({
+      event: 'chat_error',
+      timestamp: new Date().toISOString(),
+      strategy: req.body.strategyType || 'unknown',
+      errorType: error instanceof Error ? error.constructor.name : 'UnknownError',
+      errorMessage: error instanceof Error ? error.message : 'Unknown error',
+      success: false,
+    }));
 
     if (error instanceof Error) {
       if ('code' in error && error.code === 'RATE_LIMIT_EXCEEDED') {

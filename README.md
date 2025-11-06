@@ -24,6 +24,7 @@ An intelligent, embeddable chatbot with dual behavioral strategies and Shopify i
 - ✅ **GitHub Actions CI/CD** - Automated testing, linting, building, deploying
 - ✅ **Vercel Deployment** - Auto-deploy on main branch, preview deployments
 - ✅ **Docker Containerization** - Multi-stage build with health checks, production-ready (v0.3.0)
+- ✅ **Analytics Logging** - Structured JSON logs for conversation metrics (strategy, length, context, success)
 - ✅ **Production Deployment** - Automated rollback, health checks, monitoring
 - ✅ **Team Documentation** - Training materials, emergency procedures, runbooks
 
@@ -169,7 +170,35 @@ docker run -d \
 - ✅ Production environment variables
 - ✅ Logs volume mounted for monitoring
 
-## 🔐 Security
+## � Analytics
+
+**Built-in conversation tracking** with structured JSON logs:
+
+```typescript
+// Automatic logging on every chat message
+{
+  "event": "chat_message",
+  "timestamp": "2025-11-06T19:30:00.000Z",
+  "strategy": "portfolio",
+  "messageLength": 33,
+  "historyLength": 2,
+  "hasContext": true,
+  "success": true
+}
+```
+
+**View Analytics:**
+- **Local**: Check terminal where `npm run dev` is running
+- **Production**: https://vercel.com/danh-les-projects/ai-chatbot/logs
+- **Helper Script**: Run `.\view-analytics.ps1` for viewing info
+
+**Metrics Tracked:**
+- Strategy used (portfolio, ecommerce, default)
+- Message and conversation length
+- Context availability (product data, etc.)
+- Success/error rates with error types
+
+## �🔐 Security
 
 - ✅ **Secret Management** - Environment variables only, never in code
 - ✅ **Rate Limiting** - Prevent abuse and DDoS attacks
