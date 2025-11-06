@@ -131,6 +131,7 @@ export async function getProductInfo(productId: string): Promise<ShopifyProduct>
         id
         title
         description
+        handle
         priceRange {
           minVariantPrice {
             amount
@@ -173,11 +174,15 @@ export async function getProductInfo(productId: string): Promise<ShopifyProduct>
 
     const priceRange = product.priceRange as Record<string, unknown>;
     const minPrice = (priceRange.minVariantPrice as Record<string, unknown>).amount;
+    const handle = product.handle as string;
+    const HEADLESS_STOREFRONT_URL = 'https://shopify-headless-lemon.vercel.app';
 
     return {
       id: product.id as string,
       title: product.title as string,
       description: product.description as string,
+      handle: handle,
+      url: handle ? `${HEADLESS_STOREFRONT_URL}/products/${handle}` : undefined,
       price: minPrice as string,
       image: ((product.featuredImage as Record<string, unknown>)?.url) as string | undefined,
       variants: [],
@@ -232,17 +237,21 @@ export async function searchProducts(query: string, limit: number = 10): Promise
     const searchResults = (data.data as Record<string, unknown>).search as Record<string, unknown>;
     const edges = searchResults.edges as Array<Record<string, Record<string, unknown>>>;
 
+    // Headless storefront URL (not the Shopify admin URL)
+    const HEADLESS_STOREFRONT_URL = 'https://shopify-headless-lemon.vercel.app';
+
     return edges.map((edge) => {
       const product = edge.node;
       const priceRange = product.priceRange as Record<string, unknown>;
       const minPrice = (priceRange.minVariantPrice as Record<string, unknown>).amount;
+      const handle = product.handle as string;
 
       return {
         id: product.id as string,
         title: product.title as string,
         description: product.description as string,
-        handle: product.handle as string,
-        url: product.onlineStoreUrl as string,
+        handle: handle,
+        url: handle ? `${HEADLESS_STOREFRONT_URL}/products/${handle}` : undefined,
         price: minPrice as string,
         image: ((product.featuredImage as Record<string, unknown>)?.url) as string | undefined,
       };

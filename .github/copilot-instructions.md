@@ -271,6 +271,19 @@ npm test
 npm test -- --coverage
 ```
 
+### Test Locally Before Merge
+**Setup**: Open 2 terminals
+1. **Terminal 1**: Run dev server in background
+   ```bash
+   npm run dev
+   ```
+2. **Terminal 2**: Test with PowerShell script
+   ```bash
+   .\chat-test.ps1
+   # or for production testing:
+   .\chat-test-prod.ps1
+   ```
+
 ### E2E Tests (Future)
 ```bash
 npm run test:e2e
