@@ -29,7 +29,8 @@ const allowedOrigins = [
   'https://www.danhle.net',
   'http://localhost:3000', // For local testing
   'http://localhost:3001', // Shopify headless local dev
-  'https://shopify-headless.vercel.app', // Vercel production
+  'https://shopify-headless-lemon.vercel.app', // Vercel production (primary)
+  'https://shopify-headless-danh-les-projects.vercel.app', // Vercel production (alias)
   'https://shopify-headless-git-main-danh-les-projects.vercel.app', // Vercel preview
   'https://shopify-ecommerce-git-main-odanrees-projects.vercel.app', // Vercel preview (old org)
   'https://shopify-ecommerce-odanrees-projects.vercel.app', // Vercel production (old org)
