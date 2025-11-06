@@ -1,21 +1,25 @@
 # AI Chatbot
 
-An intelligent, embeddable chatbot with customizable behavioral strategies. Integrates with Shopify, OpenAI, and modern web frameworks.
+An intelligent, embeddable chatbot with dual behavioral strategies and Shopify integration. Built with Strategy Pattern for extensible, customizable chatbot personalities.
 
-**Status**: ✅ Production Ready - Phase 7.2 Complete  
+**Status**: ✅ Production Ready - Dual Strategies Complete  
 **Version**: v1.0.0  
-**Project Progress**: Core 100% + Portfolio Strategy Complete  
+**Strategies**: Portfolio (Live) + Ecommerce (Ready)  
 **Documentation**: See [ROADMAP.md](ROADMAP.md) for timeline | [INDEX.md](INDEX.md) for complete guide
 
 ## ✨ Features
 
-- ✅ **Behavioral Strategy Pattern** - Customizable chatbot personalities (Portfolio, Ecommerce, Support)
-- ✅ **Portfolio Strategy** - AI assistant for personal portfolio websites with resume/project knowledge
+### **Dual Behavioral Strategies**
+- ✅ **Portfolio Strategy** - AI assistant for personal portfolio websites with resume/project knowledge (Live on [danhle.net](https://danhle.net))
+- ✅ **Ecommerce Strategy** - Shopping assistant with product search, order tracking via Shopify Admin API, customer lookup, and cart assistance
+- ✅ **Strategy Pattern Architecture** - Easily extensible for new chatbot personalities without modifying core code
+
+### **Core Capabilities**
 - ✅ **OpenAI Integration** - GPT-4 and GPT-3.5-turbo with streaming and custom system prompts
-- ✅ **Shopify Integration** - Product search, order lookup via GraphQL
+- ✅ **Shopify Integration** - Storefront API (product search) + Admin API (order tracking, customer lookup)
 - ✅ **Embeddable Chat Widget** - Self-contained JavaScript widget with strategy type support
 - ✅ **Smart Bot Logic** - Intent recognition, context management, multi-turn conversations
-- ✅ **REST API** - `/api/chat` endpoint with TypeScript types and strategy support
+- ✅ **REST API** - `/api/chat` endpoint with TypeScript types and strategy parameter
 - ✅ **Comprehensive Tests** - 216 passing unit/integration tests, production-ready code
 - ✅ **GitHub Actions CI/CD** - Automated testing, linting, building, deploying
 - ✅ **Vercel Deployment** - Auto-deploy on main branch, preview deployments
@@ -86,10 +90,28 @@ Add to any website with customizable strategy:
 ```
 
 **Available Strategies:**
-- `portfolio` - Personal portfolio assistant with resume/project knowledge
-- `ecommerce` - Shopping assistant (coming soon in Phase 7.3)
-- `support` - Customer support agent (coming soon in Phase 7.4)
+- `portfolio` - Personal portfolio assistant with resume/project knowledge (✅ Live on danhle.net)
+- `ecommerce` - Shopping assistant with Shopify Admin API integration for order tracking and customer lookup (✅ Production Ready)
+- `support` - Customer support agent (future enhancement)
 - `default` - General purpose chatbot
+
+**Strategy Capabilities:**
+
+**Portfolio Strategy:**
+- Resume and experience questions
+- Project details and technical stack
+- Skills and expertise lookup
+- Contact information
+- Career highlights
+
+**Ecommerce Strategy:**
+- Product search via Shopify Storefront API
+- Order tracking via Shopify Admin API (with order number)
+- Customer order history lookup (via email)
+- Size, fit, and product guidance
+- Cart and checkout assistance
+- Shipping and return policy information
+- Gift recommendations
 
 See [docs/CHAT_WIDGET.md](docs/CHAT_WIDGET.md) for full configuration options and examples.
 
