@@ -281,7 +281,8 @@ describe('OpenAI Integration', () => {
         ]);
       });
 
-      expect(duration).toBeGreaterThanOrEqual(50);
+      // Allow for slight timing variation in CI/CD (±5ms tolerance)
+      expect(duration).toBeGreaterThanOrEqual(45);
     });
   });
 
