@@ -93,7 +93,7 @@
     header.className = 'ai-chatbot-header';
     header.style.cssText = `
       padding: 16px;
-      background: #007bff;
+      background: #0056b3;
       color: white;
       border-radius: 12px 12px 0 0;
       display: flex;
@@ -163,7 +163,7 @@
     sendBtn.type = 'submit';
     sendBtn.textContent = 'Send';
     sendBtn.style.cssText = `
-      background: #007bff;
+      background: #0056b3;
       color: white;
       border: none;
       border-radius: 6px;
@@ -260,7 +260,7 @@
       max-width: 75%;
       padding: 10px 14px;
       border-radius: 8px;
-      background: ${role === 'user' ? '#007bff' : '#f0f0f0'};
+      background: ${role === 'user' ? '#0056b3' : '#f0f0f0'};
       color: ${role === 'user' ? 'white' : 'black'};
       font-size: 14px;
       word-wrap: break-word;
