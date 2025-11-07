@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Chatbot - Mobile Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    h1 {
+      color: #007bff;
+    }
+    .info {
+      background: #f0f8ff;
+      border-left: 4px solid #007bff;
+      padding: 15px;
+      margin: 20px 0;
+    }
+    .test-instructions {
+      background: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 15px;
+      margin: 20px 0;
+    }
+    code {
+      background: #f4f4f4;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+    }
+  </style>
+</head>
+<body>
+  <h1>🤖 AI Chatbot - Mobile Widget Test</h1>
+
+  <div class="info">
+    <strong>Testing Mobile Responsive Chatbot</strong>
+    <p>This page tests the new mobile-friendly chatbot widget with:</p>
+    <ul>
+      <li>✅ Floating Action Button (FAB) - Minimized icon on mobile</li>
+      <li>✅ Constrained size on mobile (90vw x 70vh)</li>
+      <li>✅ Click to open/close functionality</li>
+      <li>✅ Responsive design at 768px breakpoint</li>
+    </ul>
+  </div>
+
+  <div class="test-instructions">
+    <strong>📱 How to Test:</strong>
+    <ol>
+      <li><strong>Desktop View (>768px)</strong>: Widget appears in bottom-right corner</li>
+      <li><strong>Mobile View (≤768px)</strong>:
+        <ul>
+          <li>Widget hidden by default</li>
+          <li>Blue chat icon (💬) appears in bottom-right</li>
+          <li>Click icon to open widget</li>
+          <li>Widget constrained to 90% width, 70% height</li>
+          <li>Click ✕ to close and minimize back to icon</li>
+        </ul>
+      </li>
+      <li><strong>To Test Mobile</strong>:
+        <ul>
+          <li>Press F12 → Toggle device toolbar</li>
+          <li>Or resize browser window to < 768px</li>
+          <li>Or open on actual mobile device</li>
+        </ul>
+      </li>
+    </ol>
+  </div>
+
+  <h2>Sample Content</h2>
+  <p>
+    This is sample content to demonstrate the page layout. The chatbot widget
+    should float over this content without blocking it completely on mobile.
+  </p>
+
+  <p>
+    On mobile devices (screens ≤768px wide), the chatbot will:
+  </p>
+  <ul>
+    <li>Start minimized as a floating button</li>
+    <li>Expand to 90% of viewport width when opened</li>
+    <li>Take up 70% of viewport height when opened</li>
+    <li>Allow users to close it and return to the icon</li>
+  </ul>
+
+  <h3>Current Configuration:</h3>
+  <ul>
+    <li><strong>API URL:</strong> <code>http://localhost:4000</code></li>
+    <li><strong>Position:</strong> <code>bottom-right</code></li>
+    <li><strong>Theme:</strong> <code>light</code></li>
+    <li><strong>Strategy:</strong> <code>ecommerce</code></li>
+  </ul>
+
+  <!-- Load chatbot widget -->
+  <link rel="stylesheet" href="http://localhost:4000/chat-widget.css">
+  <script src="http://localhost:4000/chat-widget.js"></script>
+  <script>
+    // Wait for script to load before initializing
+    window.addEventListener('load', function() {
+      if (typeof AIChatbot !== 'undefined') {
+        AIChatbot.init({
+          apiUrl: 'http://localhost:4000',
+          position: 'bottom-right',
+          theme: 'light',
+          strategyType: 'ecommerce'
+        });
+        console.log('✅ Chatbot initialized successfully');
+      } else {
+        console.error('❌ AIChatbot is not defined. Check if chat-widget.js loaded correctly.');
+        console.error('Try opening http://localhost:4000/chat-widget.js in a new tab to verify the file is accessible.');
+      }
+    });
+  </script>
+</body>
+</html>
