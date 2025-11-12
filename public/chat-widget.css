@@ -10,6 +10,8 @@
 #ai-chatbot-widget {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
   box-sizing: border-box;
+  position: fixed;
+  z-index: 999999;
 }
 
 #ai-chatbot-widget * {
@@ -297,7 +299,7 @@ form button:disabled {
 
 #ai-chatbot-fab.bottom-right {
   bottom: 20px;
-  right: 20px;
+  right: 90px;
 }
 
 #ai-chatbot-fab.bottom-left {
