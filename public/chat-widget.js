@@ -355,6 +355,7 @@
   window.AIChatbot = {
     init,
     toggle: toggleWidget,
+    open: openWidget,
     getHistory,
     clearHistory,
     version: '1.0.0', // Updated for strategy pattern
