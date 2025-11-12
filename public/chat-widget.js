@@ -159,6 +159,18 @@
       font-family: inherit;
     `;
 
+    // Add focus handler for accessibility
+    input.addEventListener('focus', function() {
+      this.style.outline = '3px solid #0056b3';
+      this.style.outlineOffset = '2px';
+      this.style.borderColor = '#0056b3';
+    });
+
+    input.addEventListener('blur', function() {
+      this.style.outline = 'none';
+      this.style.borderColor = '#e0e0e0';
+    });
+
     const sendBtn = document.createElement('button');
     sendBtn.type = 'submit';
     sendBtn.textContent = 'Send';
@@ -172,6 +184,16 @@
       font-weight: 500;
       cursor: pointer;
     `;
+
+    // Add focus handler for accessibility
+    sendBtn.addEventListener('focus', function() {
+      this.style.outline = '3px solid #0056b3';
+      this.style.outlineOffset = '2px';
+    });
+
+    sendBtn.addEventListener('blur', function() {
+      this.style.outline = 'none';
+    });
 
     form.appendChild(input);
     form.appendChild(sendBtn);
