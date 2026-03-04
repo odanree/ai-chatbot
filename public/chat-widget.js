@@ -259,6 +259,12 @@
       fab,
     };
 
+    // Restore persisted closed state
+    if (localStorage.getItem('ai-chatbot-state') === 'closed') {
+      container.style.display = 'none';
+      fab.style.display = 'flex';
+    }
+
     // Add initial message from strategy
     addMessage('assistant', greeting);
   }
@@ -309,6 +315,7 @@
     chatWidget.container.style.display = 'flex';
     chatWidget.container.classList.add('open'); // Add class for mobile CSS
     chatWidget.fab.style.display = 'none';
+    localStorage.removeItem('ai-chatbot-state');
     
     // Focus input
     setTimeout(() => chatWidget.input.focus(), 100);
@@ -327,6 +334,7 @@
       chatWidget.container.style.display = 'none';
       chatWidget.container.classList.remove('open'); // Remove class for mobile CSS
       chatWidget.fab.style.display = 'flex';
+      localStorage.setItem('ai-chatbot-state', 'closed');
     } else {
       // Open widget
       openWidget();
