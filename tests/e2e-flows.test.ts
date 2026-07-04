@@ -5,7 +5,6 @@
 
 import { beforeEach, describe, expect, it } from "vitest";
 import {
-	createMockMessage,
 	createMockOrder,
 	createMockProduct,
 	testData,
@@ -18,8 +17,8 @@ describe("End-to-End Conversation Flows", () => {
 
 	describe("Product Inquiry Flow", () => {
 		it("should handle complete product inquiry workflow", async () => {
-			const userId: string = testData.randomUserId();
-			const sessionId: string = testData.randomSessionId();
+			const _userId: string = testData.randomUserId();
+			const _sessionId: string = testData.randomSessionId();
 
 			// Step 1: User asks about product
 			const userMessage: string = "What is the price of the blue t-shirt?";
@@ -81,8 +80,8 @@ describe("End-to-End Conversation Flows", () => {
 
 	describe("Order Status Flow", () => {
 		it("should handle complete order status workflow", () => {
-			const userId: string = testData.randomUserId();
-			const sessionId: string = testData.randomSessionId();
+			const _userId: string = testData.randomUserId();
+			const _sessionId: string = testData.randomSessionId();
 
 			// Step 1: User asks about order
 			const userMessage: string = "Where is my order?";
@@ -289,7 +288,7 @@ describe("End-to-End Conversation Flows", () => {
 		});
 
 		it("should coordinate multiple handlers for complex queries", () => {
-			const query: string = "What is the status of my blue shirt order?";
+			const _query: string = "What is the status of my blue shirt order?";
 			const requiredHandlers: string[] = [
 				"handleProductInquiry", // For "blue shirt"
 				"handleOrderStatus", // For "order status"
@@ -362,7 +361,7 @@ describe("End-to-End Conversation Flows", () => {
 	describe("Response Quality", () => {
 		it("should generate contextually relevant responses", () => {
 			const userMessage: string = "I am interested in t-shirts";
-			const expectedKeywords: string[] = ["t-shirt", "available", "price"];
+			const _expectedKeywords: string[] = ["t-shirt", "available", "price"];
 
 			// Response should be relevant
 			expect(userMessage).toContain("t-shirt");

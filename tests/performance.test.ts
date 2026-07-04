@@ -180,7 +180,7 @@ describe("Performance Tests", () => {
 	describe("Throughput", () => {
 		it("should process 10 requests per second minimum", async () => {
 			const requests: number = 10;
-			const duration: number = 1000;
+			const _duration: number = 1000;
 
 			const { duration: actualDuration } = await measureExecutionTime(
 				async () => {

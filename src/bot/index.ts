@@ -5,7 +5,7 @@
 
 import { getAIResponse } from "../integrations/openai.js";
 import { getOrderStatus, searchProducts } from "../integrations/shopify.js";
-import { contextManager, Message } from "./context.js";
+import { contextManager } from "./context.js";
 import { Intent, type IntentResult, intentRecognizer } from "./intents.js";
 
 export interface BotRequest {
@@ -70,7 +70,7 @@ export async function processBotMessage(
 				if (!response || response.length === 0) {
 					response = await handleOpenAIIntent(intentResult, message, history);
 				}
-			} catch (error) {
+			} catch (_error) {
 				console.log("[Bot] Shopify handler failed, falling back to OpenAI");
 				response = await handleOpenAIIntent(intentResult, message, history);
 			}
@@ -97,8 +97,8 @@ export async function processBotMessage(
  */
 async function handleShopifyIntent(
 	intentResult: IntentResult,
-	message: string,
-	userContext: Record<string, unknown>,
+	_message: string,
+	_userContext: Record<string, unknown>,
 ): Promise<string> {
 	const intent: Intent = intentResult.intent;
 
@@ -170,17 +170,17 @@ async function handleOpenAIIntent(
 	const intent: Intent = intentResult.intent;
 
 	// Build context for OpenAI
-	let systemMessage: string =
+	let _systemMessage: string =
 		"You are a helpful customer service chatbot for an ecommerce store. ";
 
 	if (intent === Intent.SMALL_TALK) {
-		systemMessage +=
+		_systemMessage +=
 			"Be friendly and engaging. After the greeting, try to understand if they need help with anything.";
 	} else if (intent === Intent.GENERAL_QUESTION) {
-		systemMessage +=
+		_systemMessage +=
 			"Answer their question helpfully. If it relates to products or orders, suggest they ask about specific products.";
 	} else {
-		systemMessage += "Provide helpful information related to their question.";
+		_systemMessage += "Provide helpful information related to their question.";
 	}
 
 	try {

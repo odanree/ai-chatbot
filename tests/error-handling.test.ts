@@ -3,8 +3,7 @@
  * Comprehensive error scenario testing
  */
 
-import { beforeEach, describe, expect, it } from "vitest";
-import { createMockMessage, expectToReject } from "./utils/test-helpers.js";
+import { describe, expect, it } from "vitest";
 
 describe("Error Handling & Edge Cases", () => {
 	describe("Invalid Input Validation", () => {
@@ -137,7 +136,7 @@ describe("Error Handling & Edge Cases", () => {
 
 	describe("Timeout Scenarios", () => {
 		it("should handle request timeout", async () => {
-			const timeoutMs: number = 5000;
+			const _timeoutMs: number = 5000;
 			const timeoutError: Error = new Error("Request timeout");
 
 			expect(timeoutError.message).toBe("Request timeout");
@@ -336,7 +335,7 @@ describe("Error Handling & Edge Cases", () => {
 
 		it("should chain error handling", async () => {
 			const promise: Promise<number> = Promise.resolve(1)
-				.then((val) => {
+				.then((_val) => {
 					throw new Error("Chain error");
 				})
 				.catch((error) => {

@@ -1,5 +1,5 @@
+import { existsSync } from "node:fs";
 import dotenv from "dotenv";
-import { existsSync } from "fs";
 
 // Load environment variables FIRST before other imports
 // In Docker, environment variables are passed directly via docker-compose
@@ -10,12 +10,11 @@ if (existsSync(".env.local")) {
 	console.warn("[Warning] .env.local not found, using environment variables");
 }
 
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import express from "express";
-import path from "path";
-import { fileURLToPath } from "url";
-import { getBotResponse } from "../bot/index.js";
 import { getAIResponse, getRateLimitStatus } from "../integrations/openai.js";
-import { getProductInfo, searchProducts } from "../integrations/shopify.js";
+import { searchProducts } from "../integrations/shopify.js";
 import { formatContext, retrieveRelevant } from "../knowledge/retrieve.js";
 import { StrategyFactory } from "../strategies/factory/StrategyFactory.js";
 import type { StrategyType } from "../types/strategy.types.js";
@@ -82,7 +81,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, "../../public")));
 
 // GET / - Welcome message
-app.get("/", (req, res) => {
+app.get("/", (_req, res) => {
 	res.json({
 		message: "AI Chatbot API",
 		version: "1.0.0",
@@ -289,7 +288,7 @@ app.post("/api/chat", async (req, res) => {
 });
 
 // GET /api/health - Health check
-app.get("/api/health", (req, res) => {
+app.get("/api/health", (_req, res) => {
 	res.json({
 		status: "ok",
 		message: "AI Chatbot API is running",
@@ -324,7 +323,7 @@ app.get("/api/strategy/:type", (req, res) => {
 });
 
 // GET /api/strategies - List available strategies
-app.get("/api/strategies", (req, res) => {
+app.get("/api/strategies", (_req, res) => {
 	res.json({
 		success: true,
 		data: {
@@ -334,7 +333,7 @@ app.get("/api/strategies", (req, res) => {
 });
 
 // GET /api/rate-limit - Check rate limit status
-app.get("/api/rate-limit", (req, res) => {
+app.get("/api/rate-limit", (_req, res) => {
 	const status = getRateLimitStatus();
 	res.json({
 		rateLimit: status,

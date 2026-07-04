@@ -3,7 +3,7 @@
  * Tests for Shopify API interactions
  */
 
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import {
 	mockShopifyOrderQuery,
 	mockShopifyProductQuery,

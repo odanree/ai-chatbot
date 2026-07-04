@@ -4,15 +4,11 @@
  */
 
 import express, { type Express, type Request, type Response } from "express";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import {
-	createMockMessage,
-	createMockUserContext,
-} from "./utils/test-helpers.js";
+import { beforeEach, describe, expect, it } from "vitest";
 
 describe("POST /api/chat Endpoint", () => {
 	let app: Express;
-	const testPort: number = 3001;
+	const _testPort: number = 3001;
 
 	beforeEach(() => {
 		app = express();
@@ -55,7 +51,7 @@ describe("POST /api/chat Endpoint", () => {
 				sessionId: "session-456",
 			};
 
-			const mockRes: Record<string, unknown> = {
+			const _mockRes: Record<string, unknown> = {
 				status: 200,
 				body: {
 					response: expect.any(String),

@@ -32,7 +32,7 @@ export function resetMockOpenAIConfig(): void {
  * Mock OpenAI chat completion response
  */
 export async function mockOpenAIChatCompletion(
-	messages: Array<{ role: string; content: string }>,
+	_messages: Array<{ role: string; content: string }>,
 ): Promise<Record<string, unknown>> {
 	if (config.delayMs) {
 		await new Promise((resolve) => setTimeout(resolve, config.delayMs));
