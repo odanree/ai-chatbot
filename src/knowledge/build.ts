@@ -412,11 +412,18 @@ function chunkSkillsSummary(
 	const sorted = [...bySkill.entries()].sort(
 		(a, b) => b[1].months - a[1].months,
 	);
+	// Intro deliberately front-loads the phrases visitors ask with — "how
+	// many years of X", "how much experience with X", "which technologies"
+	// — so the chunk embeds close to aggregate-skill queries. (This chunk
+	// is also pinned in retrieve.ts as a belt-and-suspenders; the intro
+	// helps if someone changes the pinning logic later.)
 	const lines: string[] = [
-		"# Skills summary (aggregated across all roles and projects)",
+		"# Skills summary — how many years of experience with each technology",
 		"",
-		"Cumulative experience per technology, computed from the periods below.",
-		"Overlapping/concurrent role time is summed — treat these as rough totals.",
+		"Authoritative per-technology totals. When asked 'how many years of X',",
+		"'how much experience with X', or 'which technologies has Danh used',",
+		"quote the numbers below verbatim rather than re-estimating from",
+		"individual roles. Overlapping/concurrent role time is summed.",
 		"",
 	];
 	for (const [skill, r] of sorted) {
