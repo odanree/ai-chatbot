@@ -11,6 +11,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import OpenAI from "openai";
+import { traced } from "../integrations/langfuse.js";
 import type { KnowledgeChunk, KnowledgeIndex } from "./types.js";
 
 const INDEX_PATH = join(process.cwd(), "data", "knowledge.json");
@@ -63,7 +64,10 @@ async function embedQuery(query: string, model: string): Promise<number[] | null
     return null;
   }
   try {
-    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+    const openai = traced(new OpenAI({ apiKey: process.env.OPENAI_API_KEY }), {
+      generationName: 'rag.retrieve.embed',
+      metadata: { model },
+    });
     const res = await openai.embeddings.create({ model, input: query });
     return res.data[0].embedding;
   } catch (e) {
