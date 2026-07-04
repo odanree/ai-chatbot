@@ -16,7 +16,7 @@ An intelligent, embeddable chatbot with dual behavioral strategies and Shopify i
 ### **Portfolio RAG pipeline**
 - ✅ **Semantic retrieval** — top-k cosine similarity over pre-embedded chunks; no live API calls at chat time
 - ✅ **Two sources** — Beacon (private profile DB, all projects) via `BEACON_API_URL` + `BEACON_JWT`, or the public JSON snapshot at [`https://danhle.net/data/portfolio.json`](https://danhle.net/data/portfolio.json) (fallback). See [ADR 002](docs/adr/002-beacon-as-alternative-rag-source.md).
-- ✅ **Build-time indexing** — `npm run build:knowledge` fetches, chunks, embeds with `text-embedding-3-small`, writes `data/knowledge.json` (~$0.0002 per rebuild)
+- ✅ **Build-time indexing** — `bun run build:knowledge` fetches, chunks, embeds with `text-embedding-3-small`, writes `data/knowledge.json` (~$0.0002 per rebuild)
 - ✅ **Capabilities guardrail** — the system prompt refuses to invent projects, features, or metrics not covered by retrieved context — no more confabulated "analytics dashboards" that don't exist
 - ✅ **One-command refresh via MCP** — the sibling [`beacon-mcp`](https://github.com/odanree/beacon-mcp) exposes `beacon_refresh_chatbot_rag` to rebuild the index from Beacon and push to origin in a single Claude tool call
 
@@ -39,7 +39,7 @@ An intelligent, embeddable chatbot with dual behavioral strategies and Shopify i
 ### 1. Install Dependencies
 
 ```bash
-npm install
+bun install
 ```
 
 ### 2. Configure Environment
@@ -58,7 +58,7 @@ SHOPIFY_STORE_DOMAIN=your-store.myshopify.com
 SHOPIFY_STOREFRONT_ACCESS_TOKEN=...
 SHOPIFY_ADMIN_API_TOKEN=...
 
-# Optional — enables Beacon-sourced RAG. When both are set, `npm run build:knowledge`
+# Optional — enables Beacon-sourced RAG. When both are set, `bun run build:knowledge`
 # fetches from Beacon instead of the public portfolio.json snapshot.
 BEACON_API_URL=https://beacon.your-domain.com
 BEACON_JWT=...
@@ -72,7 +72,7 @@ NODE_ENV=development
 ### 2b. Build the RAG Index (portfolio strategy only)
 
 ```bash
-npm run build:knowledge
+bun run build:knowledge
 ```
 
 Fetches projects + experiences (from Beacon if creds are set, otherwise from `https://danhle.net/data/portfolio.json`), chunks them, embeds each chunk with `text-embedding-3-small`, and writes `data/knowledge.json`. Commit that file — production deploys use whatever is checked in.
@@ -82,7 +82,7 @@ Rebuild whenever the source content changes. For hands-off refresh from a Claude
 ### 3. Start Development Server
 
 ```bash
-npm run dev
+bun run dev
 ```
 
 Server runs on `http://localhost:4000`
@@ -143,14 +143,23 @@ See [docs/CHAT_WIDGET.md](docs/CHAT_WIDGET.md) for full configuration options an
 ### Run Tests
 
 ```bash
-npm test
+bun test
 ```
+
+### Lint & Format
+
+```bash
+bun run check       # report issues (used by CI + pre-commit)
+bun run check:fix   # auto-fix formatting, import order, lint autofixes
+```
+
+Biome runs automatically on staged files via a `simple-git-hooks` pre-commit hook installed by `bun install`.
 
 ### Build for Production
 
 ```bash
-npm run build
-npm start
+bun run build
+bun start
 ```
 
 ### Run with Docker
@@ -210,7 +219,7 @@ docker run -d \
 ```
 
 **View Analytics:**
-- **Local**: Check terminal where `npm run dev` is running
+- **Local**: Check terminal where `bun run dev` is running
 - **Production**: https://vercel.com/danh-les-projects/ai-chatbot/logs
 - **Helper Script**: Run `.\view-analytics.ps1` for viewing info
 
