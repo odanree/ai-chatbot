@@ -349,6 +349,6 @@ if (!process.env.VERCEL) {
 	app.listen(PORT, () => {
 		console.log(`AI Chatbot API running on port ${PORT}`);
 		console.log(`Environment: ${process.env.NODE_ENV || "development"}`);
-		console.log(`OpenAI Model: ${process.env.OPENAI_MODEL || "gpt-3.5-turbo"}`);
+		console.log(`OpenAI Model: ${process.env.OPENAI_MODEL || "gpt-4o-mini"}`);
 	});
 }
