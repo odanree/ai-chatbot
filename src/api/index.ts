@@ -16,6 +16,7 @@ import { fileURLToPath } from 'url';
 import { getBotResponse } from '../bot/index.js';
 import { getAIResponse, getRateLimitStatus } from '../integrations/openai.js';
 import { searchProducts, getProductInfo } from '../integrations/shopify.js';
+import { formatContext, retrieveRelevant } from '../knowledge/retrieve.js';
 import { StrategyFactory } from '../strategies/factory/StrategyFactory.js';
 import { StrategyType } from '../types/strategy.types.js';
 
@@ -113,6 +114,23 @@ app.post('/api/chat', async (req, res) => {
     // Get system prompt from strategy
     let systemPrompt = strategy.getSystemPrompt();
     let contextInfo = '';
+
+    // For portfolio strategy, do semantic retrieval over the RAG index
+    // (built at deploy time from https://danhle.net/data/portfolio.json).
+    if (strategy.getType() === 'portfolio') {
+      try {
+        const relevant = await retrieveRelevant(message, 3);
+        if (relevant.length > 0) {
+          contextInfo = formatContext(relevant);
+          console.log(`[Chat API] portfolio RAG: injected ${relevant.length} chunks (${relevant.map(c => c.id).join(', ')})`);
+        } else {
+          console.log(`[Chat API] portfolio RAG: no chunks above similarity floor for "${message}"`);
+        }
+      } catch (error) {
+        console.error('[Chat API] portfolio RAG error:', error);
+        // Continue with static system prompt if retrieval fails
+      }
+    }
 
     // For ecommerce strategy, try to search products if message mentions product keywords
     if (strategy.getType() === 'ecommerce') {

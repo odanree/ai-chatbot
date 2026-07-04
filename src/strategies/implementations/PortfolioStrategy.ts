@@ -1,11 +1,25 @@
 /**
  * PortfolioStrategy
- * Chatbot behavior for Danh Le's portfolio website
- * Showcases experience, skills, projects, and provides contact information
+ *
+ * Chatbot behavior for Danh Le's portfolio at danhle.net.
+ *
+ * Runtime grounding: retrieval-augmented against a build-time index
+ * (see src/knowledge/build.ts + retrieve.ts). The API handler calls
+ * retrieveRelevant() per user message and appends the retrieved chunks to
+ * this strategy's system prompt as a RETRIEVED CONTEXT block.
+ *
+ * This class deliberately does NOT ship a large hardcoded knowledgeBase — the
+ * previous version did, and it went stale (portfolio grew to 30+ projects,
+ * KB still listed 4), which is exactly what invited the model to confabulate
+ * capabilities. Retrieval-first is the fix.
+ *
+ * The `KnowledgeBase` returned by getKnowledgeBase() is minimal — only stable
+ * facts (owner identity, contact, links) that are cheap to keep in sync and
+ * that visitors expect the chatbot to answer without a retrieval round-trip.
  */
 
 import { BaseBehaviorStrategy } from '../base/BaseBehaviorStrategy.js';
-import { StrategyType, KnowledgeBase } from '../../types/strategy.types.js';
+import { KnowledgeBase, StrategyType } from '../../types/strategy.types.js';
 
 export class PortfolioStrategy extends BaseBehaviorStrategy {
   private knowledgeBase: KnowledgeBase;
@@ -13,98 +27,34 @@ export class PortfolioStrategy extends BaseBehaviorStrategy {
   constructor() {
     super(
       true, // enabled
-      '1.0.0', // version
+      '2.0.0', // bumped: RAG-grounded, was 1.0.0 hardcoded-KB
       'professional', // tone
       150 // maxResponseLength
     );
 
+    // Stable, non-project data only. Anything project- or experience-related
+    // comes from the RAG retrieval layer at chat time.
     this.knowledgeBase = {
       owner: 'Danh Le',
       role: 'Full Stack Developer',
-      company: undefined, // Not mentioned in portfolio
+      company: undefined,
       location: 'Orange, CA',
       yearsExperience: '8+ years',
-      
-      skills: [
-        // Frontend
-        'React', 'Next.js', 'TypeScript', 'JavaScript (ES6+)',
-        'HTML5', 'CSS3', 'SASS/SCSS', 'Bootstrap',
-        'jQuery', 'Responsive Web Design',
-        
-        // Backend
-        'Node.js', 'Express.js', 'PHP', 'WordPress', 'WooCommerce',
-        'REST APIs', 'GraphQL',
-        
-        // E-commerce & CMS
-        'Shopify', 'WooCommerce', 'WordPress', 'Magento',
-        
-        // Tools & Platforms
-        'Git', 'GitHub', 'VS Code', 'Figma',
-        'AWS (S3, CloudFront)', 'Vercel', 'cPanel',
-        
-        // Testing & QA
-        'Cypress', 'Jest', 'Vitest', 'Cross-browser Testing',
-        
-        // Other
-        'SEO', 'Google Analytics', 'Tag Manager', 'A/B Testing',
-        'Agile/Scrum', 'CI/CD'
-      ],
-      
-      projects: [
-        {
-          name: 'AI Chatbot Widget',
-          description: 'Embeddable AI-powered chatbot with customizable behavior strategies for different use cases (portfolio, ecommerce, support). Features OpenAI integration, CORS security, and dynamic greeting system.',
-          technologies: ['TypeScript', 'Express.js', 'OpenAI API', 'Node.js', 'Vercel', 'Strategy Pattern'],
-          link: 'https://ai-chatbot-lake-eight-99.vercel.app'
-        },
-        {
-          name: 'Shopify Headless Ecommerce',
-          description: 'Modern headless commerce platform with Next.js and Shopify Storefront API. Features custom cart, product browsing, variant selection, and Cypress E2E testing.',
-          technologies: ['Next.js', 'TypeScript', 'Shopify Storefront API', 'CSS Modules', 'Cypress'],
-          link: undefined
-        },
-        {
-          name: 'Portfolio Website',
-          description: 'Personal portfolio website showcasing full-stack development skills. Hosted on AWS S3 with CloudFront CDN, featuring integrated AI chatbot assistant.',
-          technologies: ['HTML5', 'CSS3', 'JavaScript', 'Bootstrap', 'AWS S3', 'CloudFront'],
-          link: 'https://danhle.net'
-        },
-        {
-          name: 'ADU Cost Calculator',
-          description: 'Intelligent Accessory Dwelling Unit (ADU) builder and cost estimation tool for California homeowners. Built with Next.js and TypeScript.',
-          technologies: ['Next.js', 'TypeScript', 'React', 'CSS Modules', 'Vercel'],
-          link: undefined
-        }
-      ],
-      
+      skills: [],
+      projects: [],
       contact: {
         email: 'danhle@danhle.net',
         location: 'Orange, CA',
-        phone: undefined // Not publicly shared
+        phone: undefined,
       },
-      
       links: {
         github: 'https://github.com/odanree',
         linkedin: 'https://www.linkedin.com/in/dtle82',
         website: 'https://danhle.net',
-        twitter: undefined
+        twitter: undefined,
       },
-      
-      highlights: [
-        '8+ years of full-stack development experience',
-        'Expert in React, TypeScript, Next.js, and modern JavaScript frameworks',
-        'Developed AI-powered chatbot with customizable Strategy Pattern architecture',
-        'Built headless e-commerce platform with Next.js and Shopify Storefront API',
-        'Portfolio website hosted on AWS S3 with CloudFront CDN',
-        'Proven expertise in TypeScript, REST API integration, and modern web development'
-      ],
-      
-      currentFocus: [
-        'Full-stack TypeScript development (React, Next.js, Node.js)',
-        'Headless e-commerce architectures',
-        'AI-powered customer experience tools',
-        'Performance optimization and Core Web Vitals'
-      ]
+      highlights: [],
+      currentFocus: [],
     };
   }
 
@@ -115,82 +65,48 @@ export class PortfolioStrategy extends BaseBehaviorStrategy {
   getSystemPrompt(): string {
     const basePrompt = `You are Danh Le's AI assistant on his portfolio website at danhle.net.
 
-ABOUT DANH LE:
-- Full Stack Developer specializing in modern web technologies
-- 8+ years of full-stack development experience
-- Location: Orange, California
-- Expert in React, TypeScript, Next.js, and e-commerce development
+ABOUT DANH:
+- Full Stack Developer, open to new opportunities
+- Located in Orange, CA
+- Contact: danhle@danhle.net
+- GitHub: https://github.com/odanree
+- LinkedIn: https://www.linkedin.com/in/dtle82
 
-CORE EXPERTISE:
-- Frontend: React, Next.js, TypeScript, JavaScript, HTML5/CSS3, Bootstrap
-- Backend: Node.js, Express.js, PHP, WordPress, WooCommerce
-- E-commerce: Shopify, WooCommerce, custom cart/checkout systems
-- Tools: Git, AWS, Vercel, Cypress, Jest, Figma
-- Specialties: Dual-platform e-commerce, headless architectures, performance optimization
-
-PERSONAL PROJECTS (showcased on portfolio):
-1. AI Chatbot Widget - Embeddable chatbot with Strategy Pattern for customizable behaviors (TypeScript, Express.js, OpenAI)
-2. Shopify Headless Ecommerce - Modern Next.js + Shopify Storefront API platform with custom cart
-3. Portfolio Website - AWS-hosted portfolio with CloudFront CDN and integrated AI assistant
-4. ADU Cost Calculator - California ADU builder and cost estimation tool (Next.js, TypeScript)
-
-KEY ACHIEVEMENTS:
-- Developed AI-powered chatbot with Strategy Pattern architecture (TypeScript, Express.js, OpenAI)
-- Built headless e-commerce platform with Next.js and Shopify Storefront API
-- Created portfolio website hosted on AWS S3 with CloudFront CDN
-- 8+ years of experience in React, Next.js, TypeScript, and modern web development
-- Strong expertise in e-commerce platforms (Shopify, WooCommerce) and REST APIs
-
-CURRENT FOCUS:
-- Full-stack TypeScript development (React, Next.js, Node.js)
-- Headless e-commerce architectures
-- AI-powered customer experience tools
-- Performance optimization & Core Web Vitals
-
-CHATBOT INSTRUMENTATION (ground truth about THIS chatbot itself):
-- Structured stdout logs emit per user message with fields: strategy, messageLength,
-  hasHistory, historyLength, hasContext, success flag, error type. That is the ONLY
-  telemetry.
-- The message text itself is NOT captured. Popular-query analysis is not possible
-  from these logs.
-- There is no conversation-level session id. Message counts can be derived; conversation
-  counts cannot without inference.
-- There is no dashboard, no live aggregation pipeline, no A/B loop feeding back into
-  prompts or model tuning. A view-analytics.ps1 script parses log output ad-hoc.
-- If asked about metrics, analytics, or observability of this chatbot, describe ONLY
-  the above. Do NOT invent dashboards, popular-query tracking, engagement scoring, or
-  optimization loops. Preferred honest answer: "Structured per-message logs only —
-  strategy, length, error rate. Message content is not stored, so popular queries
-  aren't tracked."
+HOW YOU KNOW THINGS:
+- Every user message triggers semantic retrieval over the portfolio's project
+  and experience data (built from https://danhle.net/data/portfolio.json). The
+  most relevant entries are appended below as a RETRIEVED CONTEXT block.
+- The context block is your single source of truth for anything project- or
+  experience-related. If the RETRIEVED CONTEXT block covers the question,
+  answer using ONLY that content — cite specific projects by name.
+- If the RETRIEVED CONTEXT block is absent or doesn't cover the question,
+  DO NOT guess or invent projects, features, or achievements. Say something
+  like "I don't have that specific information — you can browse the full list
+  at https://danhle.net or reach Danh at danhle@danhle.net" and stop there.
 
 CAPABILITIES GUARDRAIL (applies to any question about this chatbot itself):
-- Only assert capabilities explicitly grounded in this system prompt.
-- If a user asks whether this chatbot does X and X is not stated above, say you don't
-  have visibility into that or that the capability is not part of this deployment.
-  Do not confabulate plausible-sounding features.
-
-YOUR ROLE AS AI ASSISTANT:
-- Answer questions about Danh's experience, skills, and personal projects
-- Provide specific examples from his portfolio projects
-- Share links to GitHub (github.com/odanree) and LinkedIn (linkedin.com/in/dtle82)
-- Help visitors understand Danh's technical capabilities and expertise
-- Suggest contacting via danhle@danhle.net for job opportunities or collaboration
-- Be professional, concise, and highlight relevant achievements
-- If asked about availability, mention Danh is open to new opportunities
-- Focus on personal projects when discussing specific work (don't mention employer projects)
+- This chatbot logs per-message structured events to stdout (strategy,
+  messageLength, hasHistory, historyLength, hasContext, success, error type).
+  Message content is NOT captured — popular-query analysis is not possible
+  from these logs. There is no dashboard, no A/B loop, no feedback into
+  model tuning. If asked about metrics or observability, describe only that.
+- Only assert capabilities explicitly grounded above or in the RETRIEVED
+  CONTEXT block. If a user asks about a feature not stated anywhere, say the
+  capability is not part of this deployment. Never confabulate plausible-
+  sounding features.
 
 RESPONSE STYLE:
-- Professional but friendly tone
-- Focus on technical accomplishments and demonstrable skills
-- Use specific examples from personal projects
-- Keep responses conversational and engaging
-- Highlight skills that match common job requirements (React, TypeScript, Next.js, e-commerce)`;
+- Professional but friendly
+- Concise — 2-4 sentences unless the visitor asks for detail
+- Cite project names from the RETRIEVED CONTEXT when discussing specific work
+- Point visitors to danhle.net for the full project list and
+  danhle@danhle.net for opportunities`;
 
     return this.buildSystemPrompt(basePrompt);
   }
 
   getGreeting(): string {
-    return "Hi! I'm Danh's AI assistant. Ask me about his experience, projects, or technical skills!";
+    return "Hi! I'm Danh's AI assistant. Ask me about his projects, experience, or how to get in touch.";
   }
 
   getKnowledgeBase(): KnowledgeBase {
@@ -199,21 +115,20 @@ RESPONSE STYLE:
 
   getSuggestedQuestions(): string[] {
     return [
+      "What AI or LLM projects has Danh built?",
+      "Tell me about Danh's Shopify and e-commerce work",
       "What's Danh's experience with React and Next.js?",
-      "Tell me about the AI Chatbot project",
-      "What e-commerce platforms has Danh worked with?",
-      "Show me Danh's personal projects",
-      "How can I contact Danh for job opportunities?"
+      "Is Danh open to new opportunities?",
+      "How can I contact Danh?",
     ];
   }
 
   getConversationStarters(): string[] {
     return [
-      "I'm looking for a React developer",
-      "Tell me about your e-commerce experience",
-      "What personal projects have you built?",
-      "Are you available for new opportunities?",
-      "Show me your GitHub and LinkedIn"
+      "I'm looking for a full-stack engineer with AI experience",
+      "What agents or MCP servers has Danh built?",
+      "Show me Danh's most recent projects",
+      "Is Danh available for contract or full-time?",
     ];
   }
 }

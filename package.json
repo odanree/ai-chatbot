@@ -5,7 +5,9 @@
   "main": "src/bot/index.js",
   "scripts": {
     "dev": "node --loader ts-node/esm src/api/index.ts",
+    "build:knowledge": "node --loader ts-node/esm src/knowledge/build.ts",
     "build": "tsc",
+    "vercel-build": "npm run build:knowledge && npm run build",
     "start": "node dist/api/index.js",
     "test": "vitest run",
     "test:watch": "vitest watch"
