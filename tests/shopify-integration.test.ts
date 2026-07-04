@@ -281,7 +281,9 @@ describe('Shopify Integration', () => {
         await mockShopifyProductQuery('gid://shopify/Product/123');
       });
 
-      expect(duration).toBeGreaterThanOrEqual(100);
+      // 5% tolerance — setTimeout(100) can wake at 99.x ms on a busy CI
+      // scheduler, which was causing sporadic CI failures on fast runners.
+      expect(duration).toBeGreaterThanOrEqual(95);
     });
 
     it('should provide rate limit info', () => {
