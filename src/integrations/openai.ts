@@ -1,4 +1,5 @@
 import { OpenAI } from 'openai';
+import { traced } from './langfuse.js';
 
 // Initialize OpenAI client (lazy initialization)
 let openai: OpenAI | null = null;
@@ -110,7 +111,13 @@ export async function getAIResponse(
     ];
 
     // Call OpenAI API
-    const client: OpenAI = getOpenAIClient();
+    const client = traced(getOpenAIClient(), {
+      generationName: 'chat.completion',
+      metadata: {
+        historyLength: conversationHistory.length,
+        streaming: false,
+      },
+    });
     const model: string = process.env.OPENAI_MODEL || 'gpt-3.5-turbo';
     const response = await client.chat.completions.create({
       model,
@@ -199,7 +206,13 @@ export async function* getAIResponseStream(
     ];
 
     // Call OpenAI API with streaming
-    const client: OpenAI = getOpenAIClient();
+    const client = traced(getOpenAIClient(), {
+      generationName: 'chat.completion.stream',
+      metadata: {
+        historyLength: conversationHistory.length,
+        streaming: true,
+      },
+    });
     const model: string = process.env.OPENAI_MODEL || 'gpt-3.5-turbo';
     const stream = await client.chat.completions.create({
       model,

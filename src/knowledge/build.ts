@@ -29,6 +29,7 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import OpenAI from "openai";
+import { traced } from "../integrations/langfuse.js";
 import type { KnowledgeChunk, KnowledgeIndex } from "./types.js";
 
 const PORTFOLIO_JSON_URL =
@@ -257,7 +258,10 @@ async function main() {
     `[rag-build] chunked ${snap.projects.length} projects + ${snap.experience.length} experience entries + 1 site = ${chunks.length} chunks`,
   );
 
-  const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  const openai = traced(new OpenAI({ apiKey: process.env.OPENAI_API_KEY }), {
+    generationName: 'rag.build.embed',
+    metadata: { chunkCount: chunks.length, model: EMBEDDING_MODEL },
+  });
   const embeddingRes = await openai.embeddings.create({
     model: EMBEDDING_MODEL,
     input: chunks.map((c) => c.text),
