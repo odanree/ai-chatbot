@@ -21,9 +21,13 @@
  * project to Beacon without touching the portfolio site and still have the
  * chatbot know about it.
  *
+ * NOT run at deploy time. `vercel-build` uses the committed `data/knowledge.json`
+ * as-is. To refresh, run `beacon-mcp`'s `refresh_chatbot_rag` tool (rebuilds
+ * against Beacon and commits the new index), or manually:
+ *
  * Run:
- *   OPENAI_API_KEY=... npm run build:knowledge                     # portfolio.json
- *   BEACON_API_URL=... BEACON_JWT=... OPENAI_API_KEY=... npm run build:knowledge   # Beacon
+ *   OPENAI_API_KEY=... bun run build:knowledge                     # portfolio.json
+ *   BEACON_API_URL=... BEACON_JWT=... OPENAI_API_KEY=... bun run build:knowledge   # Beacon
  */
 
 import { mkdirSync, writeFileSync } from "node:fs";
