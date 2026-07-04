@@ -16,7 +16,7 @@ export interface KnowledgeChunk {
 	/** OpenAI text-embedding-3-small vector (1536 dims). */
 	embedding: number[];
 	/** Group label so the model knows what kind of entry this is. */
-	kind: "project" | "experience" | "site";
+	kind: "project" | "experience" | "site" | "skills";
 }
 
 export interface KnowledgeIndex {

@@ -15,7 +15,7 @@ import { flush, traced } from "../integrations/langfuse.js";
 import type { KnowledgeChunk, KnowledgeIndex } from "./types.js";
 
 const INDEX_PATH = join(process.cwd(), "data", "knowledge.json");
-const DEFAULT_TOP_K = 3;
+const DEFAULT_TOP_K = 5;
 // Any candidate whose cosine similarity is below this is dropped even if it's
 // in the top-k. Prevents unrelated chunks from leaking in when the user asks
 // off-topic questions.
