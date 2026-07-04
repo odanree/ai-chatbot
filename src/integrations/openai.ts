@@ -122,7 +122,7 @@ export async function getAIResponse(
 				streaming: false,
 			},
 		});
-		const model: string = process.env.OPENAI_MODEL || "gpt-3.5-turbo";
+		const model: string = process.env.OPENAI_MODEL || "gpt-4o-mini";
 		const response = await client.chat.completions.create({
 			model,
 			messages: messages as OpenAI.Chat.ChatCompletionMessageParam[],
@@ -221,7 +221,7 @@ export async function* getAIResponseStream(
 				streaming: true,
 			},
 		});
-		const model: string = process.env.OPENAI_MODEL || "gpt-3.5-turbo";
+		const model: string = process.env.OPENAI_MODEL || "gpt-4o-mini";
 		const stream = await client.chat.completions.create({
 			model,
 			messages: messages as OpenAI.Chat.ChatCompletionMessageParam[],
