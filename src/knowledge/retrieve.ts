@@ -11,7 +11,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import OpenAI from "openai";
-import { traced } from "../integrations/langfuse.js";
+import { traced, flush } from "../integrations/langfuse.js";
 import type { KnowledgeChunk, KnowledgeIndex } from "./types.js";
 
 const INDEX_PATH = join(process.cwd(), "data", "knowledge.json");
@@ -69,6 +69,7 @@ async function embedQuery(query: string, model: string): Promise<number[] | null
       metadata: { model },
     });
     const res = await openai.embeddings.create({ model, input: query });
+    await flush(openai);
     return res.data[0].embedding;
   } catch (e) {
     console.error("[rag-retrieve] query embedding failed:", e);

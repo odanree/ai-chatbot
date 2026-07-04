@@ -1,5 +1,5 @@
 import { OpenAI } from 'openai';
-import { traced } from './langfuse.js';
+import { traced, flush } from './langfuse.js';
 
 // Initialize OpenAI client (lazy initialization)
 let openai: OpenAI | null = null;
@@ -135,6 +135,8 @@ export async function getAIResponse(
       (message.length + responseText.length) / 4
     );
 
+    await flush(client);
+
     return {
       message: responseText,
       model,
@@ -229,6 +231,8 @@ export async function* getAIResponseStream(
         yield content;
       }
     }
+
+    await flush(client);
   } catch (error) {
     // Handle errors
     if (error instanceof OpenAI.APIError) {

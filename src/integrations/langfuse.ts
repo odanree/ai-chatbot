@@ -35,3 +35,12 @@ export function traced<T extends OpenAI>(openai: T, opts: TraceOpts): T {
   if (!getLangfuse()) return openai;
   return observeOpenAI(openai, opts) as unknown as T;
 }
+
+// Ships queued events to Langfuse. Serverless runtimes (Vercel, Lambda) freeze
+// the process between requests without firing `beforeExit`, so the SDK's
+// in-memory queue is discarded unless we flush explicitly per request.
+// Safe to call on the raw client too — it's a no-op when observeOpenAI didn't wrap.
+export async function flush(client: unknown): Promise<void> {
+  const fn = (client as { flushAsync?: () => Promise<unknown> })?.flushAsync;
+  if (typeof fn === 'function') await fn.call(client).catch(() => {});
+}
