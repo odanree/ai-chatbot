@@ -4,65 +4,68 @@
  * Helps customers with product questions, cart assistance, and order support
  */
 
-import { BaseBehaviorStrategy } from '../base/BaseBehaviorStrategy.js';
-import { StrategyType, KnowledgeBase } from '../../types/strategy.types.js';
+import type {
+	KnowledgeBase,
+	StrategyType,
+} from "../../types/strategy.types.js";
+import { BaseBehaviorStrategy } from "../base/BaseBehaviorStrategy.js";
 
 export class EcommerceStrategy extends BaseBehaviorStrategy {
-  constructor() {
-    super(
-      true, // enabled
-      '1.0.0', // version
-      'friendly', // tone - welcoming and helpful for shoppers
-      200 // maxResponseLength - longer for product explanations
-    );
-  }
+	constructor() {
+		super(
+			true, // enabled
+			"1.0.0", // version
+			"friendly", // tone - welcoming and helpful for shoppers
+			200, // maxResponseLength - longer for product explanations
+		);
+	}
 
-  getType(): StrategyType {
-    return 'ecommerce';
-  }
+	getType(): StrategyType {
+		return "ecommerce";
+	}
 
-  getKnowledgeBase(): KnowledgeBase {
-    // Ecommerce strategy uses minimal static knowledge
-    // Product data comes dynamically from Shopify API (Storefront + Admin APIs)
-    return {
-      owner: 'Store',
-      role: 'Ecommerce Platform',
-      skills: [
-        'Product Search', 
-        'Cart Management', 
-        'Order Tracking', 
-        'Customer Support',
-        'Inventory Information',
-        'Order History Lookup'
-      ],
-      projects: [],
-      contact: {},
-      links: {},
-      highlights: [
-        'Browse our product catalog',
-        'Secure checkout process',
-        'Real-time order tracking',
-        'Fast shipping',
-        'Easy returns and exchanges',
-        'Customer order history access'
-      ]
-    };
-  }
+	getKnowledgeBase(): KnowledgeBase {
+		// Ecommerce strategy uses minimal static knowledge
+		// Product data comes dynamically from Shopify API (Storefront + Admin APIs)
+		return {
+			owner: "Store",
+			role: "Ecommerce Platform",
+			skills: [
+				"Product Search",
+				"Cart Management",
+				"Order Tracking",
+				"Customer Support",
+				"Inventory Information",
+				"Order History Lookup",
+			],
+			projects: [],
+			contact: {},
+			links: {},
+			highlights: [
+				"Browse our product catalog",
+				"Secure checkout process",
+				"Real-time order tracking",
+				"Fast shipping",
+				"Easy returns and exchanges",
+				"Customer order history access",
+			],
+		};
+	}
 
-  getName(): string {
-    return 'Ecommerce Shopping Assistant';
-  }
+	getName(): string {
+		return "Ecommerce Shopping Assistant";
+	}
 
-  getDescription(): string {
-    return 'Helpful shopping assistant for ecommerce stores. Assists with product questions, sizing, cart help, order tracking, and customer support via Shopify Admin API.';
-  }
+	getDescription(): string {
+		return "Helpful shopping assistant for ecommerce stores. Assists with product questions, sizing, cart help, order tracking, and customer support via Shopify Admin API.";
+	}
 
-  getGreeting(): string {
-    return "Hi! I'm your shopping assistant. I can help you find products, track your order, answer questions about sizing and features, or look up your order history. What can I help you with today?";
-  }
+	getGreeting(): string {
+		return "Hi! I'm your shopping assistant. I can help you find products, track your order, answer questions about sizing and features, or look up your order history. What can I help you with today?";
+	}
 
-  getSystemPrompt(): string {
-    return `You are a helpful shopping assistant for an online store with access to Shopify Admin API. Your role is to:
+	getSystemPrompt(): string {
+		return `You are a helpful shopping assistant for an online store with access to Shopify Admin API. Your role is to:
 
 1. **Product Help**: Answer questions about products, features, sizes, materials, and availability
    - Use Shopify Storefront API to search products and get details
@@ -108,79 +111,80 @@ Guidelines:
 - Respect customer privacy - only share order info with verified customers
 
 Remember: You're here to make shopping easy and enjoyable with powerful order tracking and customer support capabilities!`;
-  }
+	}
 
-  getCapabilities(): string[] {
-    return [
-      'Product search and recommendations',
-      'Size and fit guidance',
-      'Cart and checkout assistance',
-      'Real-time order tracking (via Shopify Admin API)',
-      'Customer order history lookup',
-      'Shipping status and delivery estimates',
-      'Returns and exchange policies',
-      'Product comparisons and details',
-      'Gift recommendations',
-      'General shopping support'
-    ];
-  }
+	getCapabilities(): string[] {
+		return [
+			"Product search and recommendations",
+			"Size and fit guidance",
+			"Cart and checkout assistance",
+			"Real-time order tracking (via Shopify Admin API)",
+			"Customer order history lookup",
+			"Shipping status and delivery estimates",
+			"Returns and exchange policies",
+			"Product comparisons and details",
+			"Gift recommendations",
+			"General shopping support",
+		];
+	}
 
-  getExampleQuestions(): string[] {
-    return [
-      'What products do you have?',
-      'Do you have this in a larger size?',
-      'What\'s your return policy?',
-      'Where is my order #1234?',
-      'Can you track my order?',
-      'What are my recent orders? (email: customer@example.com)',
-      'How long does shipping take?',
-      'Can you help me find a gift?',
-      'What\'s the difference between these products?',
-      'Do you have any sales or promotions?',
-      'What\'s the status of order #5678?',
-      'Can you look up my order history?'
-    ];
-  }
+	getExampleQuestions(): string[] {
+		return [
+			"What products do you have?",
+			"Do you have this in a larger size?",
+			"What's your return policy?",
+			"Where is my order #1234?",
+			"Can you track my order?",
+			"What are my recent orders? (email: customer@example.com)",
+			"How long does shipping take?",
+			"Can you help me find a gift?",
+			"What's the difference between these products?",
+			"Do you have any sales or promotions?",
+			"What's the status of order #5678?",
+			"Can you look up my order history?",
+		];
+	}
 
-  shouldHandleIntent(intent: string): boolean {
-    const ecommerceIntents = [
-      'product_inquiry',
-      'size_question',
-      'cart_help',
-      'order_status',
-      'order_tracking',
-      'shipping_info',
-      'return_policy',
-      'price_question',
-      'availability',
-      'recommendation',
-      'gift_suggestion',
-      'checkout_help',
-      'payment_question',
-      'customer_lookup',
-      'order_history'
-    ];
+	shouldHandleIntent(intent: string): boolean {
+		const ecommerceIntents = [
+			"product_inquiry",
+			"size_question",
+			"cart_help",
+			"order_status",
+			"order_tracking",
+			"shipping_info",
+			"return_policy",
+			"price_question",
+			"availability",
+			"recommendation",
+			"gift_suggestion",
+			"checkout_help",
+			"payment_question",
+			"customer_lookup",
+			"order_history",
+		];
 
-    return ecommerceIntents.includes(intent.toLowerCase());
-  }
+		return ecommerceIntents.includes(intent.toLowerCase());
+	}
 
-  enhanceResponse(response: string, context?: any): string {
-    // Add shopping-friendly enhancements
-    let enhanced = response;
+	enhanceResponse(response: string, context?: any): string {
+		// Add shopping-friendly enhancements
+		let enhanced = response;
 
-    // Add order tracking CTAs if order-related
-    if (context?.orderId || context?.orderStatus) {
-      enhanced += '\n\nNeed help with anything else regarding your order?';
-    }
-    // Add shopping CTAs if product-related
-    else if (context?.products && context.products.length > 0) {
-      enhanced += '\n\nWould you like to browse our products or need help with anything else?';
-    }
-    // Add customer support CTA if customer data is involved
-    else if (context?.customer || context?.email) {
-      enhanced += '\n\nIs there anything else I can help you with today?';
-    }
+		// Add order tracking CTAs if order-related
+		if (context?.orderId || context?.orderStatus) {
+			enhanced += "\n\nNeed help with anything else regarding your order?";
+		}
+		// Add shopping CTAs if product-related
+		else if (context?.products && context.products.length > 0) {
+			enhanced +=
+				"\n\nWould you like to browse our products or need help with anything else?";
+		}
+		// Add customer support CTA if customer data is involved
+		else if (context?.customer || context?.email) {
+			enhanced += "\n\nIs there anything else I can help you with today?";
+		}
 
-    return enhanced;
-  }
+		return enhanced;
+	}
 }

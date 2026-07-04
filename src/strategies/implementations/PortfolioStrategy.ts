@@ -18,52 +18,55 @@
  * that visitors expect the chatbot to answer without a retrieval round-trip.
  */
 
-import { BaseBehaviorStrategy } from '../base/BaseBehaviorStrategy.js';
-import { KnowledgeBase, StrategyType } from '../../types/strategy.types.js';
+import type {
+	KnowledgeBase,
+	StrategyType,
+} from "../../types/strategy.types.js";
+import { BaseBehaviorStrategy } from "../base/BaseBehaviorStrategy.js";
 
 export class PortfolioStrategy extends BaseBehaviorStrategy {
-  private knowledgeBase: KnowledgeBase;
+	private knowledgeBase: KnowledgeBase;
 
-  constructor() {
-    super(
-      true, // enabled
-      '2.0.0', // bumped: RAG-grounded, was 1.0.0 hardcoded-KB
-      'professional', // tone
-      150 // maxResponseLength
-    );
+	constructor() {
+		super(
+			true, // enabled
+			"2.0.0", // bumped: RAG-grounded, was 1.0.0 hardcoded-KB
+			"professional", // tone
+			150, // maxResponseLength
+		);
 
-    // Stable, non-project data only. Anything project- or experience-related
-    // comes from the RAG retrieval layer at chat time.
-    this.knowledgeBase = {
-      owner: 'Danh Le',
-      role: 'Full Stack Developer',
-      company: undefined,
-      location: 'Orange, CA',
-      yearsExperience: '8+ years',
-      skills: [],
-      projects: [],
-      contact: {
-        email: 'danhle@danhle.net',
-        location: 'Orange, CA',
-        phone: undefined,
-      },
-      links: {
-        github: 'https://github.com/odanree',
-        linkedin: 'https://www.linkedin.com/in/dtle82',
-        website: 'https://danhle.net',
-        twitter: undefined,
-      },
-      highlights: [],
-      currentFocus: [],
-    };
-  }
+		// Stable, non-project data only. Anything project- or experience-related
+		// comes from the RAG retrieval layer at chat time.
+		this.knowledgeBase = {
+			owner: "Danh Le",
+			role: "Full Stack Developer",
+			company: undefined,
+			location: "Orange, CA",
+			yearsExperience: "8+ years",
+			skills: [],
+			projects: [],
+			contact: {
+				email: "danhle@danhle.net",
+				location: "Orange, CA",
+				phone: undefined,
+			},
+			links: {
+				github: "https://github.com/odanree",
+				linkedin: "https://www.linkedin.com/in/dtle82",
+				website: "https://danhle.net",
+				twitter: undefined,
+			},
+			highlights: [],
+			currentFocus: [],
+		};
+	}
 
-  getType(): StrategyType {
-    return 'portfolio';
-  }
+	getType(): StrategyType {
+		return "portfolio";
+	}
 
-  getSystemPrompt(): string {
-    const basePrompt = `You are Danh Le's AI assistant on his portfolio website at danhle.net.
+	getSystemPrompt(): string {
+		const basePrompt = `You are Danh Le's AI assistant on his portfolio website at danhle.net.
 
 ABOUT DANH:
 - Full Stack Developer, open to new opportunities
@@ -102,33 +105,33 @@ RESPONSE STYLE:
 - Point visitors to danhle.net for the full project list and
   danhle@danhle.net for opportunities`;
 
-    return this.buildSystemPrompt(basePrompt);
-  }
+		return this.buildSystemPrompt(basePrompt);
+	}
 
-  getGreeting(): string {
-    return "Hi! I'm Danh's AI assistant. Ask me about his projects, experience, or how to get in touch.";
-  }
+	getGreeting(): string {
+		return "Hi! I'm Danh's AI assistant. Ask me about his projects, experience, or how to get in touch.";
+	}
 
-  getKnowledgeBase(): KnowledgeBase {
-    return this.knowledgeBase;
-  }
+	getKnowledgeBase(): KnowledgeBase {
+		return this.knowledgeBase;
+	}
 
-  getSuggestedQuestions(): string[] {
-    return [
-      "What AI or LLM projects has Danh built?",
-      "Tell me about Danh's Shopify and e-commerce work",
-      "What's Danh's experience with React and Next.js?",
-      "Is Danh open to new opportunities?",
-      "How can I contact Danh?",
-    ];
-  }
+	getSuggestedQuestions(): string[] {
+		return [
+			"What AI or LLM projects has Danh built?",
+			"Tell me about Danh's Shopify and e-commerce work",
+			"What's Danh's experience with React and Next.js?",
+			"Is Danh open to new opportunities?",
+			"How can I contact Danh?",
+		];
+	}
 
-  getConversationStarters(): string[] {
-    return [
-      "I'm looking for a full-stack engineer with AI experience",
-      "What agents or MCP servers has Danh built?",
-      "Show me Danh's most recent projects",
-      "Is Danh available for contract or full-time?",
-    ];
-  }
+	getConversationStarters(): string[] {
+		return [
+			"I'm looking for a full-stack engineer with AI experience",
+			"What agents or MCP servers has Danh built?",
+			"Show me Danh's most recent projects",
+			"Is Danh available for contract or full-time?",
+		];
+	}
 }
