@@ -86,6 +86,16 @@ async function embedQuery(
 /**
  * Return the top-k most relevant KnowledgeChunks for a query, or [] if the
  * index is missing / embedding fails. Fails closed — never throws.
+ *
+ * The `skills:summary` chunk (kind === "skills") is *pinned* — always
+ * returned as the first result if the index has one, and doesn't count
+ * against the k slots. Its opening line ("aggregated across all roles
+ * and projects") embeds poorly against "years of X" queries, so pure
+ * cosine ranking sinks it below individual role chunks that mention the
+ * tech by name, and the model then re-estimates from role snippets
+ * instead of quoting the pre-computed total. Pinning guarantees the
+ * model always sees the source of truth for aggregate questions;
+ * semantic retrieval still fills the remaining k slots.
  */
 export async function retrieveRelevant(
 	query: string,
@@ -95,15 +105,15 @@ export async function retrieveRelevant(
 	if (!index) return [];
 	const qVec = await embedQuery(query, index.embeddingModel);
 	if (!qVec) return [];
-	const scored = index.chunks.map((c) => ({
-		c,
-		score: cosine(qVec, c.embedding),
-	}));
-	scored.sort((a, b) => b.score - a.score);
-	return scored
+	const pinned = index.chunks.filter((c) => c.kind === "skills");
+	const semantic = index.chunks
+		.filter((c) => c.kind !== "skills")
+		.map((c) => ({ c, score: cosine(qVec, c.embedding) }))
+		.sort((a, b) => b.score - a.score)
 		.filter((s) => s.score >= MIN_SIMILARITY)
 		.slice(0, k)
 		.map((s) => s.c);
+	return [...pinned, ...semantic];
 }
 
 /**
