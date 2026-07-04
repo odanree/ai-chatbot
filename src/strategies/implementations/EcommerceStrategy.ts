@@ -10,6 +10,16 @@ import type {
 } from "../../types/strategy.types.js";
 import { BaseBehaviorStrategy } from "../base/BaseBehaviorStrategy.js";
 
+// Shape of the context object enhanceResponse() reads from. Fields are all
+// optional — the method just branches on presence to pick the appropriate CTA.
+interface EcommerceEnhanceContext {
+	orderId?: string;
+	orderStatus?: string;
+	products?: unknown[];
+	customer?: unknown;
+	email?: string;
+}
+
 export class EcommerceStrategy extends BaseBehaviorStrategy {
 	constructor() {
 		super(
@@ -167,7 +177,7 @@ Remember: You're here to make shopping easy and enjoyable with powerful order tr
 		return ecommerceIntents.includes(intent.toLowerCase());
 	}
 
-	enhanceResponse(response: string, context?: any): string {
+	enhanceResponse(response: string, context?: EcommerceEnhanceContext): string {
 		// Add shopping-friendly enhancements
 		let enhanced = response;
 

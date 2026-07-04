@@ -13,7 +13,7 @@ export interface KnowledgeBase {
 	projects?: ProjectInfo[];
 	contact?: ContactInfo;
 	links?: SocialLinks;
-	[key: string]: any; // Allow additional properties
+	[key: string]: unknown; // Allow additional properties
 }
 
 export interface ProjectInfo {
@@ -54,7 +54,7 @@ export interface StrategyConfig {
 export interface ChatRequest {
 	message: string;
 	strategyType?: StrategyType;
-	context?: Record<string, any>;
+	context?: Record<string, unknown>;
 }
 
 export interface ChatResponse {
