@@ -4,12 +4,19 @@ import { flush, traced } from "./langfuse.js";
 // Initialize OpenAI client (lazy initialization)
 let openai: OpenAI | null = null;
 
+interface AIError extends Error {
+	code?: string;
+	status?: number;
+}
+
 function getOpenAIClient(): OpenAI {
 	if (!openai) {
 		if (!process.env.OPENAI_API_KEY) {
-			const error = new Error("OPENAI_API_KEY environment variable is not set");
-			(error as any).code = "MISSING_API_KEY";
-			(error as any).status = 500;
+			const error = new Error(
+				"OPENAI_API_KEY environment variable is not set",
+			) as AIError;
+			error.code = "MISSING_API_KEY";
+			error.status = 500;
 			throw error;
 		}
 		openai = new OpenAI({
@@ -29,11 +36,6 @@ interface AIResponse {
 	message: string;
 	model: string;
 	tokensUsed: number;
-}
-
-interface AIError extends Error {
-	code?: string;
-	status?: number;
 }
 
 // Rate limiting configuration
