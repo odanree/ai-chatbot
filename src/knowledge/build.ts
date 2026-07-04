@@ -53,8 +53,11 @@ interface NormalizedExperience {
 	title: string;
 	company: string;
 	period: string;
+	startDate?: string;
+	endDate?: string;
 	location?: string;
 	achievements: string[];
+	technologies: string[];
 }
 interface NormalizedSite {
 	name: string;
@@ -82,6 +85,49 @@ const FALLBACK_SITE: NormalizedSite = {
 	],
 };
 
+// Parse portfolio.json's free-form period ("May 2022 - 2026", "Jan 2020 - May 2022")
+// into ISO-ish start/end dates good enough for month-delta math. Returns
+// { start: undefined, end: undefined } if we can't confidently parse.
+const MONTHS: Record<string, number> = {
+	jan: 0,
+	feb: 1,
+	mar: 2,
+	apr: 3,
+	may: 4,
+	jun: 5,
+	jul: 6,
+	aug: 7,
+	sep: 8,
+	oct: 9,
+	nov: 10,
+	dec: 11,
+};
+function parsePeriod(period: string): { start?: string; end?: string } {
+	const norm = period.replace(/–/g, "-");
+	const [rawStart, rawEnd] = norm.split(/\s*-\s*/).map((s) => s.trim());
+	const toISO = (s?: string): string | undefined => {
+		if (!s) return undefined;
+		if (/^present$/i.test(s)) return new Date().toISOString().slice(0, 10);
+		const m = s.match(/^(?:(\w+)\s+)?(\d{4})$/);
+		if (!m) return undefined;
+		const mo = m[1] ? MONTHS[m[1].slice(0, 3).toLowerCase()] : 0;
+		if (m[1] && mo === undefined) return undefined;
+		return `${m[2]}-${String((mo ?? 0) + 1).padStart(2, "0")}-01`;
+	};
+	return { start: toISO(rawStart), end: toISO(rawEnd) };
+}
+
+interface PortfolioExperienceRaw {
+	id: string;
+	title: string;
+	company: string;
+	period: string;
+	location?: string;
+	achievements: string[];
+	current?: boolean;
+	technologies?: string[];
+}
+
 async function fetchFromPortfolioJson(
 	url: string,
 ): Promise<NormalizedSnapshot> {
@@ -94,12 +140,26 @@ async function fetchFromPortfolioJson(
 	}
 	const snap = (await res.json()) as {
 		projects: NormalizedProject[];
-		experience: NormalizedExperience[];
+		experience: PortfolioExperienceRaw[];
 		site?: NormalizedSite;
 	};
+	const experience: NormalizedExperience[] = snap.experience.map((e) => {
+		const { start, end } = parsePeriod(e.period);
+		return {
+			id: e.id,
+			title: e.title,
+			company: e.company,
+			period: e.period,
+			startDate: start,
+			endDate: e.current ? undefined : end,
+			location: e.location,
+			achievements: e.achievements,
+			technologies: e.technologies ?? [],
+		};
+	});
 	return {
 		projects: snap.projects,
-		experience: snap.experience,
+		experience,
 		site: snap.site ?? FALLBACK_SITE,
 		sourceLabel: url,
 	};
@@ -191,8 +251,11 @@ async function fetchFromBeacon(
 			title: e.title,
 			company: e.company,
 			period,
+			startDate: e.start_date,
+			endDate: e.is_current ? undefined : e.end_date,
 			location: e.location,
 			achievements,
+			technologies: e.tech_stack ?? [],
 		};
 	});
 
@@ -230,6 +293,8 @@ function chunkExperience(e: NormalizedExperience): KnowledgeChunk {
 		`Period: ${e.period}`,
 	];
 	if (e.location) parts.push(`Location: ${e.location}`);
+	if (e.technologies.length)
+		parts.push(`Technologies: ${e.technologies.join(", ")}`);
 	parts.push("", "Achievements:");
 	for (const a of e.achievements) parts.push(`- ${a}`);
 	return {
@@ -238,6 +303,137 @@ function chunkExperience(e: NormalizedExperience): KnowledgeChunk {
 		text: parts.join("\n"),
 		embedding: [],
 		kind: "experience",
+	};
+}
+
+// Text patterns → canonical skill name. Lets us count PHP time spent on
+// WordPress/WooCommerce/CakePHP/YII2 roles even when tech_stack tags are missing
+// or use framework names instead of the base language. Case-insensitive, matched
+// as whole-word substrings of the technology token and achievement text.
+const SKILL_ALIASES: Record<string, string[]> = {
+	PHP: [
+		"php",
+		"wordpress",
+		"woocommerce",
+		"cakephp",
+		"yii2",
+		"acf",
+		"psr-4",
+		"phpunit",
+		"phpstan",
+	],
+	TypeScript: ["typescript", "next.js", "nextjs"],
+	Python: [
+		"python",
+		"fastapi",
+		"pydantic",
+		"sqlalchemy",
+		"pytest",
+		"django",
+		"celery",
+	],
+	React: ["react", "react.js", "react 18", "react 19", "next.js", "expo"],
+	Node: ["node.js", "node ", "express", "vitest", "jest"],
+	Docker: ["docker", "docker compose", "kubernetes"],
+	AWS: ["aws", "lambda", "ec2", "s3", "iam", "eventbridge"],
+	Shopify: ["shopify", "liquid", "storefront api", "admin api"],
+	PostgreSQL: ["postgresql", "postgres"],
+	Redis: ["redis"],
+};
+
+function detectSkills(...texts: string[]): Set<string> {
+	const haystack = texts.join(" ").toLowerCase();
+	const hit = new Set<string>();
+	for (const [canonical, aliases] of Object.entries(SKILL_ALIASES)) {
+		if (aliases.some((a) => haystack.includes(a))) hit.add(canonical);
+	}
+	return hit;
+}
+
+function monthsBetween(startISO: string, endISO: string): number {
+	const s = new Date(startISO);
+	const e = new Date(endISO);
+	return Math.max(
+		0,
+		(e.getFullYear() - s.getFullYear()) * 12 + (e.getMonth() - s.getMonth()),
+	);
+}
+
+// Aggregate skill mentions across all experience + projects into a single
+// chunk. Callers asking summation questions ("how many years of X",
+// "what's your Python experience") match this at the top and get a
+// per-skill total + source-of-truth list to justify the number.
+function chunkSkillsSummary(
+	experience: NormalizedExperience[],
+	projects: NormalizedProject[],
+): KnowledgeChunk {
+	interface Row {
+		months: number;
+		roles: string[];
+		projects: string[];
+	}
+	const bySkill = new Map<string, Row>();
+	const row = (s: string): Row => {
+		let r = bySkill.get(s);
+		if (!r) {
+			r = { months: 0, roles: [], projects: [] };
+			bySkill.set(s, r);
+		}
+		return r;
+	};
+	const today = new Date().toISOString().slice(0, 10);
+
+	for (const e of experience) {
+		const skills = detectSkills(...e.technologies, ...e.achievements, e.title);
+		const start = e.startDate;
+		const end = e.endDate ?? today;
+		const months = start ? monthsBetween(start, end) : 0;
+		const roleLabel = `${e.title} @ ${e.company} (${e.period})`;
+		for (const s of skills) {
+			const r = row(s);
+			r.months += months;
+			r.roles.push(roleLabel);
+		}
+	}
+	for (const p of projects) {
+		const skills = detectSkills(
+			...p.technologies,
+			p.description,
+			...p.features,
+			p.title,
+		);
+		for (const s of skills) row(s).projects.push(p.title);
+	}
+
+	const sorted = [...bySkill.entries()].sort(
+		(a, b) => b[1].months - a[1].months,
+	);
+	const lines: string[] = [
+		"# Skills summary (aggregated across all roles and projects)",
+		"",
+		"Cumulative experience per technology, computed from the periods below.",
+		"Overlapping/concurrent role time is summed — treat these as rough totals.",
+		"",
+	];
+	for (const [skill, r] of sorted) {
+		const years = (r.months / 12).toFixed(1);
+		lines.push(`## ${skill}: ~${years} years`);
+		if (r.roles.length) {
+			lines.push("Used in roles:");
+			for (const role of r.roles) lines.push(`- ${role}`);
+		}
+		if (r.projects.length) {
+			lines.push("Also used in projects:");
+			for (const proj of r.projects) lines.push(`- ${proj}`);
+		}
+		lines.push("");
+	}
+	return {
+		id: "skills:summary",
+		title: "Skills summary",
+		text: lines.join("\n"),
+		embedding: [],
+		kind: "skills",
 	};
 }
 
@@ -269,11 +465,12 @@ async function main() {
 
 	const chunks: KnowledgeChunk[] = [
 		chunkSite(snap.site),
+		chunkSkillsSummary(snap.experience, snap.projects),
 		...snap.projects.map(chunkProject),
 		...snap.experience.map(chunkExperience),
 	];
 	console.log(
-		`[rag-build] chunked ${snap.projects.length} projects + ${snap.experience.length} experience entries + 1 site = ${chunks.length} chunks`,
+		`[rag-build] chunked ${snap.projects.length} projects + ${snap.experience.length} experience entries + 1 site + 1 skills summary = ${chunks.length} chunks`,
 	);
 
 	const openai = traced(new OpenAI({ apiKey: process.env.OPENAI_API_KEY }), {
