@@ -2,17 +2,23 @@
 
 An intelligent, embeddable chatbot with dual behavioral strategies and Shopify integration. Built with Strategy Pattern for extensible, customizable chatbot personalities.
 
-**Status**: ✅ Production Ready - Dual Strategies Complete  
-**Version**: v1.0.0  
-**Strategies**: Portfolio (Live) + Ecommerce (Ready)  
-**Documentation**: See [ROADMAP.md](ROADMAP.md) for timeline | [INDEX.md](INDEX.md) for complete guide
+**Status**: ✅ Production Ready — Portfolio Strategy now RAG-grounded  
+**Strategies**: Portfolio v2.0.0 (RAG) + Ecommerce (Ready)  
+**Documentation**: See [ROADMAP.md](docs/ROADMAP.md) for timeline | [INDEX.md](docs/INDEX.md) for complete guide | [docs/adr/](docs/adr/) for design decisions
 
 ## ✨ Features
 
 ### **Dual Behavioral Strategies**
-- ✅ **Portfolio Strategy** - AI assistant for personal portfolio websites with resume/project knowledge (Live on [danhle.net](https://danhle.net))
-- ✅ **Ecommerce Strategy** - Shopping assistant with product search, order tracking via Shopify Admin API, customer lookup, and cart assistance
-- ✅ **Strategy Pattern Architecture** - Easily extensible for new chatbot personalities without modifying core code
+- ✅ **Portfolio Strategy** — RAG-grounded assistant for personal portfolio websites. Answers grounded on a build-time semantic index (see below). Live on [danhle.net](https://danhle.net). See [ADR 001](docs/adr/001-portfolio-rag.md).
+- ✅ **Ecommerce Strategy** — Shopping assistant with product search, order tracking via Shopify Admin API, customer lookup, and cart assistance
+- ✅ **Strategy Pattern Architecture** — Easily extensible for new chatbot personalities without modifying core code
+
+### **Portfolio RAG pipeline**
+- ✅ **Semantic retrieval** — top-k cosine similarity over pre-embedded chunks; no live API calls at chat time
+- ✅ **Two sources** — Beacon (private profile DB, all projects) via `BEACON_API_URL` + `BEACON_JWT`, or the public JSON snapshot at [`https://danhle.net/data/portfolio.json`](https://danhle.net/data/portfolio.json) (fallback). See [ADR 002](docs/adr/002-beacon-as-alternative-rag-source.md).
+- ✅ **Build-time indexing** — `npm run build:knowledge` fetches, chunks, embeds with `text-embedding-3-small`, writes `data/knowledge.json` (~$0.0002 per rebuild)
+- ✅ **Capabilities guardrail** — the system prompt refuses to invent projects, features, or metrics not covered by retrieved context — no more confabulated "analytics dashboards" that don't exist
+- ✅ **One-command refresh via MCP** — the sibling [`beacon-mcp`](https://github.com/odanree/beacon-mcp) exposes `beacon_refresh_chatbot_rag` to rebuild the index from Beacon and push to origin in a single Claude tool call
 
 ### **Core Capabilities**
 - ✅ **OpenAI Integration** - GPT-4 and GPT-3.5-turbo with streaming and custom system prompts
@@ -51,11 +57,27 @@ OPENAI_API_KEY=sk-...
 SHOPIFY_STORE_DOMAIN=your-store.myshopify.com
 SHOPIFY_STOREFRONT_ACCESS_TOKEN=...
 SHOPIFY_ADMIN_API_TOKEN=...
+
+# Optional — enables Beacon-sourced RAG. When both are set, `npm run build:knowledge`
+# fetches from Beacon instead of the public portfolio.json snapshot.
+BEACON_API_URL=https://beacon.your-domain.com
+BEACON_JWT=...
+
 PORT=3000
 NODE_ENV=development
 ```
 
 **Complete Guide**: See [docs/ENVIRONMENT_CONFIGURATION.md](docs/ENVIRONMENT_CONFIGURATION.md)
+
+### 2b. Build the RAG Index (portfolio strategy only)
+
+```bash
+npm run build:knowledge
+```
+
+Fetches projects + experiences (from Beacon if creds are set, otherwise from `https://danhle.net/data/portfolio.json`), chunks them, embeds each chunk with `text-embedding-3-small`, and writes `data/knowledge.json`. Commit that file — production deploys use whatever is checked in.
+
+Rebuild whenever the source content changes. For hands-off refresh from a Claude session, use the [`beacon_refresh_chatbot_rag`](https://github.com/odanree/beacon-mcp) MCP tool.
 
 ### 3. Start Development Server
 
@@ -268,7 +290,7 @@ See [docs/architecture.md](docs/architecture.md) for detailed architecture overv
 
 ## 📚 Documentation
 
-**Start Here**: [INDEX.md](INDEX.md) - Complete documentation map with reading paths by role
+**Start Here**: [INDEX.md](docs/INDEX.md) - Complete documentation map with reading paths by role
 
 ### Core Documentation
 
@@ -323,19 +345,19 @@ See [docs/architecture.md](docs/architecture.md) for detailed architecture overv
 
 | Need | Read This |
 |------|-----------|
-| **Project Overview** | [INDEX.md](INDEX.md) (master index) |
-| **Project Timeline** | [ROADMAP.md](ROADMAP.md) |
+| **Project Overview** | [INDEX.md](docs/INDEX.md) (master index) |
+| **Project Timeline** | [ROADMAP.md](docs/ROADMAP.md) |
 | **Testing Info** | [docs/EXECUTIVE_SUMMARY.md](docs/EXECUTIVE_SUMMARY.md) |
 | **Architecture** | [docs/architecture.md](docs/architecture.md) |
 | **Code Review** | [/docs/code-review/](docs/code-review/) (4 documents) |
 
 ### By Role
 
-- **👤 New to Project** → Start with [docs/EXECUTIVE_SUMMARY.md](docs/EXECUTIVE_SUMMARY.md) → [INDEX.md](INDEX.md)
+- **👤 New to Project** → Start with [docs/EXECUTIVE_SUMMARY.md](docs/EXECUTIVE_SUMMARY.md) → [INDEX.md](docs/INDEX.md)
 - **👨‍💻 Developer** → [docs/TEST_ARCHITECTURE.md](docs/TEST_ARCHITECTURE.md) → [docs/architecture.md](docs/architecture.md)
 - **🧪 QA/Tester** → [docs/TEST_ARCHITECTURE.md](docs/TEST_ARCHITECTURE.md) → [docs/EXECUTIVE_SUMMARY.md](docs/EXECUTIVE_SUMMARY.md)
 - **🔍 Code Reviewer** → [/docs/code-review/PR_5_OVERVIEW.md](docs/code-review/PR_5_OVERVIEW.md)
-- **📊 Stakeholder** → [docs/EXECUTIVE_SUMMARY.md](docs/EXECUTIVE_SUMMARY.md) → [ROADMAP.md](ROADMAP.md)
+- **📊 Stakeholder** → [docs/EXECUTIVE_SUMMARY.md](docs/EXECUTIVE_SUMMARY.md) → [ROADMAP.md](docs/ROADMAP.md)
 
 ## Project Status
 
