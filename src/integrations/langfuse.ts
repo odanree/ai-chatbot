@@ -1,27 +1,12 @@
-import { Langfuse, observeOpenAI } from 'langfuse';
+import { observeOpenAI } from 'langfuse';
 import type OpenAI from 'openai';
 
-let lf: Langfuse | null | undefined;
-
-function getLangfuse(): Langfuse | null {
-  if (lf !== undefined) return lf;
-  const { LANGFUSE_PUBLIC_KEY, LANGFUSE_SECRET_KEY } = process.env;
-  if (!LANGFUSE_PUBLIC_KEY || !LANGFUSE_SECRET_KEY) {
-    lf = null;
-    return lf;
-  }
-  lf = new Langfuse({
-    publicKey: LANGFUSE_PUBLIC_KEY,
-    secretKey: LANGFUSE_SECRET_KEY,
-    baseUrl: process.env.LANGFUSE_HOST,
-    environment: process.env.LANGFUSE_ENVIRONMENT ?? 'development',
-  });
-  const flush = (): void => {
-    lf?.flushAsync().catch(() => {});
-  };
-  process.once('SIGTERM', flush);
-  process.once('beforeExit', flush);
-  return lf;
+// Env vars used (all read by the langfuse SDK's internal singleton):
+//   LANGFUSE_PUBLIC_KEY, LANGFUSE_SECRET_KEY  — required, gate the no-op path
+//   LANGFUSE_BASEURL                          — e.g. https://us.cloud.langfuse.com
+//   LANGFUSE_TRACING_ENVIRONMENT              — e.g. production
+function enabled(): boolean {
+  return !!(process.env.LANGFUSE_PUBLIC_KEY && process.env.LANGFUSE_SECRET_KEY);
 }
 
 export interface TraceOpts {
@@ -32,7 +17,7 @@ export interface TraceOpts {
 }
 
 export function traced<T extends OpenAI>(openai: T, opts: TraceOpts): T {
-  if (!getLangfuse()) return openai;
+  if (!enabled()) return openai;
   return observeOpenAI(openai, opts) as unknown as T;
 }
 
