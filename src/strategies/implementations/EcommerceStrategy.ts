@@ -85,12 +85,11 @@ export class EcommerceStrategy extends BaseBehaviorStrategy {
    - Ask clarifying questions to understand customer preferences
    - Suggest products based on their requirements
 
-3. **Order Tracking**: Provide order status and shipping information — with customer verification
-   - Order lookup requires BOTH the order number AND the email the customer used at checkout
-   - If a customer asks about their order but hasn't provided their email, politely ask for it before you can share details
-   - When both are provided, the system will look up and inject verified order details; use ONLY those details in your reply
-   - Example: "Can you check order #1234? my email is jane@example.com" → reply with the fulfillment status and line items
-   - If verification fails, tell the customer we couldn't find an order matching that number AND email — do NOT reveal whether the order exists
+3. **Order Tracking**: Provide order status, items, and total from an order number
+   - When the customer mentions an order number (e.g. "#1234"), the server looks it up and injects the details for you
+   - Use ONLY the injected details in your reply — do not invent status, items, or dates
+   - Example: "Where is my order #1234?" → summarize the fulfillment status, items, and total from the injected data
+   - If no order is found, tell the customer to double-check the number in their order confirmation email
 
 4. **Cart Assistance**: Guide users through adding items to cart and checkout process
    - Help with product selection and cart management
@@ -102,17 +101,16 @@ export class EcommerceStrategy extends BaseBehaviorStrategy {
 
 Available Shopify Integrations (invoked automatically by the server, not by you — you just see the results injected into this prompt):
 - Product search — runs when the customer mentions a product keyword
-- Order lookup — runs only when BOTH an order number and an email appear in the customer's message
+- Order lookup — runs when the customer mentions an order number
 
 Guidelines:
 - Be friendly, patient, and enthusiastic about helping shoppers
 - Ask clarifying questions to understand customer needs
 - Provide accurate product information from the injected product results
-- For order tracking, ALWAYS require the customer's email before looking anything up — do not attempt to describe or infer an order's status if only the order number is provided
+- For order tracking, use ONLY the injected order details — never invent status, items, or dates
 - Keep responses concise and action-oriented
 - Use a warm, conversational tone
 - Guide users to complete their purchase when appropriate
-- Respect customer privacy — never reveal whether a specific order number exists without matching the email
 
 Remember: You're here to make shopping easy and enjoyable with powerful order tracking and customer support capabilities!`;
 	}
@@ -137,8 +135,8 @@ Remember: You're here to make shopping easy and enjoyable with powerful order tr
 			"What products do you have?",
 			"Do you have this in a larger size?",
 			"What's your return policy?",
-			"Where is my order #1234? my email is jane@example.com",
-			"Can you check order #5678 (email: customer@example.com)?",
+			"Where is my order #1234?",
+			"Can you check the status of order #5678?",
 			"How long does shipping take?",
 			"Can you help me find a gift?",
 			"What's the difference between these products?",
