@@ -444,6 +444,10 @@ export async function getOrderByNumber(
 	// Strip a leading '#' if the LLM passed it; Shopify's `name` filter is happy
 	// with either form but keeping it uniform makes the query cache-friendly.
 	const cleanNumber = orderNumber.replace(/^#/, "");
+	// Use `order.email` directly (the address entered at checkout) instead of
+	// `order.customer.email` — same read_orders scope, no read_customers grant
+	// needed. Also fits the verification intent better: it's the exact address
+	// the customer typed at checkout, which is what they'll remember.
 	const query = `
     query FindOrder($q: String!) {
       orders(first: 1, query: $q) {
@@ -453,7 +457,7 @@ export async function getOrderByNumber(
             name
             displayFulfillmentStatus
             createdAt
-            customer { email }
+            email
             totalPriceSet { shopMoney { amount currencyCode } }
             lineItems(first: 10) {
               edges {
@@ -511,9 +515,8 @@ export async function getOrderByNumber(
 		if (!edges || edges.length === 0) return null;
 
 		const order = edges[0].node;
-		const customer = order.customer as { email?: string } | null;
-		const customerEmail = customer?.email?.toLowerCase() ?? "";
-		if (customerEmail !== email.trim().toLowerCase()) return null;
+		const orderEmail = (order.email as string | null)?.toLowerCase() ?? "";
+		if (orderEmail !== email.trim().toLowerCase()) return null;
 
 		const totalPrice = (
 			(order.totalPriceSet as Record<string, Record<string, unknown>>)

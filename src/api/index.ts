@@ -252,7 +252,16 @@ app.post("/api/chat", async (req, res) => {
 						contextInfo += `\n\nORDER LOOKUP RESULT: could not verify. Tell the customer we could not find an order matching that number and email combination, and to double-check both. Do NOT say the order exists or that the email is wrong — say both together.`;
 					}
 				} catch (error) {
-					console.error("[Chat API] Order lookup error:", error);
+					// Explicit fields — Vercel's log viewer collapses raw Error objects to
+					// "[Object]" which hides the code/status/message we actually need.
+					const err = error as {
+						code?: string;
+						status?: number;
+						message?: string;
+					};
+					console.error(
+						`[Chat API] Order lookup error: code=${err.code ?? "unknown"} status=${err.status ?? "n/a"} message=${err.message ?? String(error)}`,
+					);
 					contextInfo += `\n\nORDER LOOKUP RESULT: system error. Ask the customer to try again in a moment or contact support.`;
 				}
 			} else if (orderNumber && !emailMatch) {
