@@ -25,11 +25,40 @@
     width: '400px',
     height: '500px',
     strategyType: 'default', // NEW: Strategy type
+    userId: null, // Optional: host page can pass a stable user id (e.g. Shopify customer id) for Langfuse attribution
   };
+
+  // localStorage key for the per-browser session id used to correlate Langfuse traces
+  const SESSION_ID_KEY = 'ai-chatbot-session-id';
 
   // Chat widget instance
   let chatWidget = null;
   let messages = [];
+
+  /**
+   * Get or create a stable per-browser session id. Persisted in localStorage so
+   * refreshes/tab-switches stay in the same Langfuse session; regenerated only
+   * if the user clears storage. Falls back to a per-load random id in browsers
+   * where localStorage is disabled (private mode / cookie-blocked embeds).
+   */
+  function getOrCreateSessionId() {
+    try {
+      const existing = localStorage.getItem(SESSION_ID_KEY);
+      if (existing) return existing;
+      const fresh = generateId();
+      localStorage.setItem(SESSION_ID_KEY, fresh);
+      return fresh;
+    } catch (_) {
+      return generateId();
+    }
+  }
+
+  function generateId() {
+    if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+      return crypto.randomUUID();
+    }
+    return 'sess-' + Math.random().toString(36).slice(2) + '-' + Date.now().toString(36);
+  }
 
   /**
    * Initialize the chat widget
@@ -212,13 +241,26 @@
       // Send to API
       try {
         sendBtn.disabled = true;
+        // Compact prior turns into the shape the OpenAI messages array expects.
+        // We exclude the message the user just typed (server appends it) and any
+        // 'error' rows (those are widget-side render markers, not real assistant turns).
+        const conversationHistory = messages
+          .filter((m) => m.role === 'user' || m.role === 'assistant')
+          .slice(0, -1)
+          .map((m) => ({ role: m.role, content: m.content }));
+
+        const body = {
+          message,
+          strategyType: config.strategyType,
+          sessionId: chatWidget.sessionId,
+          conversationHistory,
+        };
+        if (config.userId) body.userId = config.userId;
+
         const response = await fetch(`${config.apiUrl}/api/chat`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            message,
-            strategyType: config.strategyType, // Send strategy type
-          }),
+          body: JSON.stringify(body),
         });
 
         if (!response.ok) {
@@ -257,6 +299,7 @@
       sendBtn,
       config,
       fab,
+      sessionId: getOrCreateSessionId(),
     };
 
     // Restore persisted closed state
@@ -349,11 +392,17 @@
   }
 
   /**
-   * Clear chat history
+   * Clear chat history. Rotates the sessionId so the next turn starts a fresh
+   * Langfuse session — otherwise old + new turns coalesce into one session with
+   * a hole where the cleared messages used to be.
    */
   function clearHistory() {
     messages = [];
     if (chatWidget) {
+      try {
+        localStorage.removeItem(SESSION_ID_KEY);
+      } catch (_) {}
+      chatWidget.sessionId = getOrCreateSessionId();
       chatWidget.messagesContainer.innerHTML = '';
       addMessage('assistant', 'Chat cleared. How can I help?');
     }

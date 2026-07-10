@@ -61,17 +61,24 @@ function isWithinRateLimit(): boolean {
 	return true;
 }
 
+export interface RequestTraceOpts {
+	sessionId?: string;
+	userId?: string;
+}
+
 /**
  * Get AI response from OpenAI
  * @param message - User message
  * @param conversationHistory - Previous messages for context
  * @param systemPrompt - Custom system prompt (optional, uses default if not provided)
+ * @param traceOpts - Optional session/user IDs threaded into Langfuse trace metadata
  * @returns AI response with metadata
  */
 export async function getAIResponse(
 	message: string,
 	conversationHistory: ChatMessage[] = [],
 	systemPrompt?: string,
+	traceOpts?: RequestTraceOpts,
 ): Promise<AIResponse> {
 	// Check rate limit
 	if (!isWithinRateLimit()) {
@@ -117,6 +124,8 @@ export async function getAIResponse(
 		// Call OpenAI API
 		const client = traced(getOpenAIClient(), {
 			generationName: "chat.completion",
+			sessionId: traceOpts?.sessionId,
+			userId: traceOpts?.userId,
 			metadata: {
 				historyLength: conversationHistory.length,
 				streaming: false,
@@ -173,6 +182,7 @@ export async function getAIResponse(
 export async function* getAIResponseStream(
 	message: string,
 	conversationHistory: ChatMessage[] = [],
+	traceOpts?: RequestTraceOpts,
 ): AsyncGenerator<string, void, unknown> {
 	// Check rate limit
 	if (!isWithinRateLimit()) {
@@ -216,6 +226,8 @@ export async function* getAIResponseStream(
 		// Call OpenAI API with streaming
 		const client = traced(getOpenAIClient(), {
 			generationName: "chat.completion.stream",
+			sessionId: traceOpts?.sessionId,
+			userId: traceOpts?.userId,
 			metadata: {
 				historyLength: conversationHistory.length,
 				streaming: true,

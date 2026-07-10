@@ -100,12 +100,24 @@ app.get("/", (_req, res) => {
 // POST /api/chat - Get AI response
 app.post("/api/chat", async (req, res) => {
 	try {
-		const { message, conversationHistory, strategyType } = req.body;
+		const { message, conversationHistory, strategyType, sessionId, userId } =
+			req.body;
 
 		if (!message) {
 			res.status(400).json({ error: "Message is required" });
 			return;
 		}
+
+		// Trace opts forwarded to Langfuse so retrieve + completion spans share a
+		// sessionId/userId. Widget generates a UUID sessionId and persists it in
+		// localStorage; host page can pass userId via AIChatbot.init({ userId }).
+		const traceOpts =
+			sessionId || userId
+				? {
+						sessionId: typeof sessionId === "string" ? sessionId : undefined,
+						userId: typeof userId === "string" ? userId : undefined,
+					}
+				: undefined;
 
 		// Get strategy (defaults to 'default' if not specified)
 		const strategy = StrategyFactory.createStrategy(
@@ -129,7 +141,7 @@ app.post("/api/chat", async (req, res) => {
 		// (built at deploy time from https://danhle.net/data/portfolio.json).
 		if (strategy.getType() === "portfolio") {
 			try {
-				const relevant = await retrieveRelevant(message, 3);
+				const relevant = await retrieveRelevant(message, 3, traceOpts);
 				if (relevant.length > 0) {
 					contextInfo = formatContext(relevant);
 					console.log(
@@ -221,6 +233,7 @@ app.post("/api/chat", async (req, res) => {
 			message,
 			conversationHistory || [],
 			systemPrompt,
+			traceOpts,
 		);
 
 		// Analytics: Log conversation metrics
@@ -232,6 +245,8 @@ app.post("/api/chat", async (req, res) => {
 				messageLength: message.length,
 				hasHistory: !!conversationHistory && conversationHistory.length > 0,
 				historyLength: conversationHistory?.length || 0,
+				hasSessionId: !!traceOpts?.sessionId,
+				hasUserId: !!traceOpts?.userId,
 				responseTime: Date.now(), // Can calculate delta if needed
 				hasContext: contextInfo.length > 0,
 				success: true,
