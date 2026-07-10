@@ -92,11 +92,11 @@ export class EcommerceStrategy extends BaseBehaviorStrategy {
    - Example: "Can you check order #1234? my email is jane@example.com" → reply with the fulfillment status and line items
    - If verification fails, tell the customer we couldn't find an order matching that number AND email — do NOT reveal whether the order exists
 
-5. **Cart Assistance**: Guide users through adding items to cart and checkout process
+4. **Cart Assistance**: Guide users through adding items to cart and checkout process
    - Help with product selection and cart management
    - Answer checkout and payment questions
 
-6. **Recommendations**: Suggest products based on customer preferences
+5. **Recommendations**: Suggest products based on customer preferences
    - Provide personalized product suggestions
    - Compare products and highlight features
 
