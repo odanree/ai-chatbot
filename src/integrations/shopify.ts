@@ -413,6 +413,148 @@ export async function getOrderStatus(orderId: string): Promise<ShopifyOrder> {
 }
 
 /**
+ * Look up an order by human-facing order number, gated by the customer email.
+ *
+ * Unauthenticated chat can't be trusted with raw order lookup — anyone could
+ * enumerate `#1`, `#2`, `#3`… and read other customers' line items and totals.
+ * We require the caller (LLM) to also collect the email the customer used at
+ * checkout, then only reveal order details if `order.customer.email` matches
+ * (case-insensitive). No signal is returned distinguishing "no such order" from
+ * "wrong email" — both collapse to `null` to keep the enumeration surface flat.
+ *
+ * Uses Admin API's orders search with `name:#{orderNumber}` — the `name`
+ * field is what Shopify displays to customers as `#1234`, unlike the numeric
+ * gid used by getOrderStatus.
+ */
+export async function getOrderByNumber(
+	orderNumber: string,
+	email: string,
+): Promise<ShopifyOrder | null> {
+	const { SHOPIFY_DOMAIN, ADMIN_TOKEN } = getShopifyConfig();
+	const ADMIN_API_URL = `https://${SHOPIFY_DOMAIN}/admin/api/2024-01/graphql.json`;
+
+	if (!ADMIN_TOKEN) {
+		const error: ShopifyError = new Error(
+			"SHOPIFY_ADMIN_API_TOKEN environment variable is not set",
+		);
+		error.code = "MISSING_ADMIN_TOKEN";
+		throw error;
+	}
+
+	// Strip a leading '#' if the LLM passed it; Shopify's `name` filter is happy
+	// with either form but keeping it uniform makes the query cache-friendly.
+	const cleanNumber = orderNumber.replace(/^#/, "");
+	const query = `
+    query FindOrder($q: String!) {
+      orders(first: 1, query: $q) {
+        edges {
+          node {
+            id
+            name
+            displayFulfillmentStatus
+            createdAt
+            customer { email }
+            totalPriceSet { shopMoney { amount currencyCode } }
+            lineItems(first: 10) {
+              edges {
+                node {
+                  id
+                  title
+                  quantity
+                  originalUnitPriceSet { shopMoney { amount currencyCode } }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  `;
+
+	try {
+		const response = await fetch(ADMIN_API_URL, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				"X-Shopify-Access-Token": ADMIN_TOKEN,
+			},
+			body: JSON.stringify({
+				query,
+				variables: { q: `name:#${cleanNumber}` },
+			}),
+		});
+
+		if (!response.ok) {
+			const error: ShopifyError = new Error(
+				`Shopify Admin API error: ${response.statusText}`,
+			);
+			error.status = response.status;
+			throw error;
+		}
+
+		const data = (await response.json()) as Record<string, unknown>;
+
+		if ("errors" in data && data.errors) {
+			const error: ShopifyError = new Error(
+				`Shopify Admin GraphQL error: ${JSON.stringify(data.errors)}`,
+			);
+			error.code = "GRAPHQL_ERROR";
+			throw error;
+		}
+
+		const edges = (
+			(data.data as Record<string, unknown>).orders as {
+				edges: Array<{ node: Record<string, unknown> }>;
+			}
+		).edges;
+
+		if (!edges || edges.length === 0) return null;
+
+		const order = edges[0].node;
+		const customer = order.customer as { email?: string } | null;
+		const customerEmail = customer?.email?.toLowerCase() ?? "";
+		if (customerEmail !== email.trim().toLowerCase()) return null;
+
+		const totalPrice = (
+			(order.totalPriceSet as Record<string, Record<string, unknown>>)
+				.shopMoney as Record<string, unknown>
+		).amount;
+		const lineItemsData = (order.lineItems as Record<string, unknown>)
+			.edges as Array<Record<string, Record<string, unknown>>>;
+
+		// `name` is `#1234`; strip the '#' to fit ShopifyOrder.orderNumber:number.
+		const nameStr = (order.name as string) || "";
+		const parsedNumber = parseInt(nameStr.replace(/^#/, ""), 10) || 0;
+
+		return {
+			id: order.id as string,
+			orderNumber: parsedNumber,
+			status: order.displayFulfillmentStatus as string,
+			createdAt: order.createdAt as string,
+			totalPrice: totalPrice as string,
+			lineItems: lineItemsData.map((item) => {
+				const node = item.node;
+				const price = (
+					(node.originalUnitPriceSet as Record<string, Record<string, unknown>>)
+						.shopMoney as Record<string, unknown>
+				).amount;
+				return {
+					id: node.id as string,
+					title: node.title as string,
+					quantity: node.quantity as number,
+					price: price as string,
+				};
+			}),
+		};
+	} catch (error) {
+		if (error instanceof Error) {
+			throw error;
+		}
+		throw new Error("Failed to look up order");
+	}
+}
+
+/**
  * Get customer data by email
  * Requires Admin API token
  */

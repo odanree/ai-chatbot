@@ -14,7 +14,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import express from "express";
 import { getAIResponse, getRateLimitStatus } from "../integrations/openai.js";
-import { searchProducts } from "../integrations/shopify.js";
+import { getOrderByNumber, searchProducts } from "../integrations/shopify.js";
 import { formatContext, retrieveRelevant } from "../knowledge/retrieve.js";
 import { StrategyFactory } from "../strategies/factory/StrategyFactory.js";
 import type { StrategyType } from "../types/strategy.types.js";
@@ -220,6 +220,43 @@ app.post("/api/chat", async (req, res) => {
 					console.error("[Chat API] Shopify search error:", error);
 					// Continue with AI response even if Shopify fails
 				}
+			}
+
+			// Order-lookup intent. Requires BOTH an order number and the email used
+			// at checkout — a naive order-number-only lookup would let anyone
+			// enumerate strangers' orders through the chat surface. If the user
+			// only sends the number, we don't call Shopify; instead we inject a
+			// nudge into the system prompt so the LLM asks for the email in-turn.
+			const orderNumberMatch = message.match(
+				/\border\s*#?\s*(\d{3,})\b|(?:^|[^A-Za-z0-9])#(\d{3,})\b/i,
+			);
+			const emailMatch = message.match(
+				/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i,
+			);
+			const orderNumber = orderNumberMatch?.[1] || orderNumberMatch?.[2];
+			if (orderNumber && emailMatch) {
+				try {
+					console.log(
+						`[Chat API] Order lookup: #${orderNumber} (email hash redacted)`,
+					);
+					const order = await getOrderByNumber(orderNumber, emailMatch[0]);
+					if (order) {
+						const items = order.lineItems
+							.map((li) => `  - ${li.quantity}x ${li.title} ($${li.price})`)
+							.join("\n");
+						contextInfo += `\n\nORDER LOOKUP RESULT (verified against customer email):\nOrder #${order.orderNumber}\nStatus: ${order.status}\nPlaced: ${order.createdAt}\nTotal: $${order.totalPrice}\nItems:\n${items}\n\nSummarize this for the customer in a friendly, concise way.`;
+					} else {
+						// Same message for "no such order" and "email mismatch" — the LLM
+						// must not tell the customer whether the order exists, only that
+						// verification failed. Prevents email/order enumeration probes.
+						contextInfo += `\n\nORDER LOOKUP RESULT: could not verify. Tell the customer we could not find an order matching that number and email combination, and to double-check both. Do NOT say the order exists or that the email is wrong — say both together.`;
+					}
+				} catch (error) {
+					console.error("[Chat API] Order lookup error:", error);
+					contextInfo += `\n\nORDER LOOKUP RESULT: system error. Ask the customer to try again in a moment or contact support.`;
+				}
+			} else if (orderNumber && !emailMatch) {
+				contextInfo += `\n\nORDER LOOKUP: the customer mentioned an order number but no email. For their privacy, ask them to reply with the email address they used at checkout so you can verify before sharing any order details. Do NOT attempt to look up the order without an email.`;
 			}
 		}
 
