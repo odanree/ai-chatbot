@@ -61,9 +61,15 @@ function cosine(a: number[], b: number[]): number {
 	return dot / (Math.sqrt(normA) * Math.sqrt(normB));
 }
 
+export interface RetrieveTraceOpts {
+	sessionId?: string;
+	userId?: string;
+}
+
 async function embedQuery(
 	query: string,
 	model: string,
+	traceOpts?: RetrieveTraceOpts,
 ): Promise<number[] | null> {
 	if (!process.env.OPENAI_API_KEY) {
 		console.warn("[rag-retrieve] OPENAI_API_KEY not set — retrieval disabled");
@@ -72,6 +78,8 @@ async function embedQuery(
 	try {
 		const openai = traced(new OpenAI({ apiKey: process.env.OPENAI_API_KEY }), {
 			generationName: "rag.retrieve.embed",
+			sessionId: traceOpts?.sessionId,
+			userId: traceOpts?.userId,
 			metadata: { model },
 		});
 		const res = await openai.embeddings.create({ model, input: query });
@@ -100,10 +108,11 @@ async function embedQuery(
 export async function retrieveRelevant(
 	query: string,
 	k: number = DEFAULT_TOP_K,
+	traceOpts?: RetrieveTraceOpts,
 ): Promise<KnowledgeChunk[]> {
 	const index = loadIndex();
 	if (!index) return [];
-	const qVec = await embedQuery(query, index.embeddingModel);
+	const qVec = await embedQuery(query, index.embeddingModel, traceOpts);
 	if (!qVec) return [];
 	const pinned = index.chunks.filter((c) => c.kind === "skills");
 	const semantic = index.chunks
