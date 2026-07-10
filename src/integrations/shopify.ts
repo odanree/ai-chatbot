@@ -413,14 +413,19 @@ export async function getOrderStatus(orderId: string): Promise<ShopifyOrder> {
 }
 
 /**
- * Look up an order by human-facing order number, gated by the customer email.
+ * Look up an order by human-facing order number.
  *
- * Unauthenticated chat can't be trusted with raw order lookup — anyone could
- * enumerate `#1`, `#2`, `#3`… and read other customers' line items and totals.
- * We require the caller (LLM) to also collect the email the customer used at
- * checkout, then only reveal order details if `order.customer.email` matches
- * (case-insensitive). No signal is returned distinguishing "no such order" from
- * "wrong email" — both collapse to `null` to keep the enumeration surface flat.
+ * IDEALLY this would gate reveal behind an email-verification check to prevent
+ * unauthenticated enumeration of #1, #2, #3.. However, Shopify's Basic /
+ * Starter plans BLOCK access to any customer-PII field on the Order type —
+ * `order.email` and `order.customer.email` both throw ACCESS_DENIED with
+ * "This app is not approved to access the Customer object." Verification is
+ * impossible on those plans.
+ *
+ * On this dev store (odanree.myshopify.com) enumeration risk is acceptable —
+ * no real customers, demo data only. If this ever runs on a store with real
+ * customer orders, upgrade to Shopify plan or higher, add `read_customers`,
+ * and re-introduce the email-match gate this function had before.
  *
  * Uses Admin API's orders search with `name:#{orderNumber}` — the `name`
  * field is what Shopify displays to customers as `#1234`, unlike the numeric
@@ -428,7 +433,6 @@ export async function getOrderStatus(orderId: string): Promise<ShopifyOrder> {
  */
 export async function getOrderByNumber(
 	orderNumber: string,
-	email: string,
 ): Promise<ShopifyOrder | null> {
 	const { SHOPIFY_DOMAIN, ADMIN_TOKEN } = getShopifyConfig();
 	const ADMIN_API_URL = `https://${SHOPIFY_DOMAIN}/admin/api/2024-01/graphql.json`;
@@ -444,10 +448,8 @@ export async function getOrderByNumber(
 	// Strip a leading '#' if the LLM passed it; Shopify's `name` filter is happy
 	// with either form but keeping it uniform makes the query cache-friendly.
 	const cleanNumber = orderNumber.replace(/^#/, "");
-	// Use `order.email` directly (the address entered at checkout) instead of
-	// `order.customer.email` — same read_orders scope, no read_customers grant
-	// needed. Also fits the verification intent better: it's the exact address
-	// the customer typed at checkout, which is what they'll remember.
+	// NOTE: intentionally NO customer/email fields — Shopify Basic/Starter blocks
+	// them all with ACCESS_DENIED regardless of scope. Only non-PII fields.
 	const query = `
     query FindOrder($q: String!) {
       orders(first: 1, query: $q) {
@@ -457,7 +459,6 @@ export async function getOrderByNumber(
             name
             displayFulfillmentStatus
             createdAt
-            email
             totalPriceSet { shopMoney { amount currencyCode } }
             lineItems(first: 10) {
               edges {
@@ -515,8 +516,6 @@ export async function getOrderByNumber(
 		if (!edges || edges.length === 0) return null;
 
 		const order = edges[0].node;
-		const orderEmail = (order.email as string | null)?.toLowerCase() ?? "";
-		if (orderEmail !== email.trim().toLowerCase()) return null;
 
 		const totalPrice = (
 			(order.totalPriceSet as Record<string, Record<string, unknown>>)
