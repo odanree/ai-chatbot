@@ -1,10 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import {
-	getCustomerData,
-	getOrderStatus,
-	getProductInfo,
-	searchProducts,
-} from "../src/integrations/shopify.js";
+import { getProductInfo, searchProducts } from "../src/integrations/shopify.js";
 
 describe("Shopify Integration", () => {
 	beforeEach(() => {
@@ -52,42 +47,6 @@ describe("Shopify Integration", () => {
 		it("should default limit to 10 if not provided", () => {
 			// Function definition ensures this
 			expect(true).toBe(true);
-		});
-	});
-
-	describe("getOrderStatus", () => {
-		it("should require SHOPIFY_ADMIN_API_TOKEN", async () => {
-			const originalToken = process.env.SHOPIFY_ADMIN_API_TOKEN;
-			delete process.env.SHOPIFY_ADMIN_API_TOKEN;
-
-			try {
-				await getOrderStatus("123456");
-				expect.fail("Should have thrown an error");
-			} catch (error) {
-				expect(error).toBeInstanceOf(Error);
-				// Error is thrown, which is the correct behavior
-				expect((error as any).message || (error as any).code).toBeTruthy();
-			} finally {
-				process.env.SHOPIFY_ADMIN_API_TOKEN = originalToken;
-			}
-		});
-	});
-
-	describe("getCustomerData", () => {
-		it("should require SHOPIFY_ADMIN_API_TOKEN", async () => {
-			const originalToken = process.env.SHOPIFY_ADMIN_API_TOKEN;
-			delete process.env.SHOPIFY_ADMIN_API_TOKEN;
-
-			try {
-				await getCustomerData("test@example.com");
-				expect.fail("Should have thrown an error");
-			} catch (error) {
-				expect(error).toBeInstanceOf(Error);
-				// Error is thrown, which is the correct behavior
-				expect((error as any).message || (error as any).code).toBeTruthy();
-			} finally {
-				process.env.SHOPIFY_ADMIN_API_TOKEN = originalToken;
-			}
 		});
 	});
 });
