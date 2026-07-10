@@ -4,7 +4,7 @@
  */
 
 import { getAIResponse } from "../integrations/openai.js";
-import { getOrderStatus, searchProducts } from "../integrations/shopify.js";
+import { searchProducts } from "../integrations/shopify.js";
 import { contextManager } from "./context.js";
 import { Intent, type IntentResult, intentRecognizer } from "./intents.js";
 
@@ -134,26 +134,11 @@ async function handleShopifyIntent(
 			return `I can check pricing for you. What product are you interested in?`;
 		}
 
-		case Intent.ORDER_STATUS: {
-			const entities = intentResult.entities as Record<string, unknown>;
-			const orderId: string | undefined = entities.orderId as
-				| string
-				| undefined;
-
-			if (orderId) {
-				try {
-					const orderStatus: unknown = await getOrderStatus(orderId);
-					if (orderStatus) {
-						return `Your order status: ${JSON.stringify(orderStatus)}`;
-					}
-				} catch (error) {
-					console.log("[Bot] Order status error:", error);
-				}
-				return `I couldn't find your order. Can you confirm your order ID?`;
-			}
-			return `I'd be happy to check your order status. Could you provide your order ID?`;
-		}
-
+		// Intent.ORDER_STATUS falls through to default — the Shopify Admin API's
+		// getOrderStatus took an internal Order gid (not the customer-facing #1234)
+		// and was never wired up correctly here. The real order-lookup path lives
+		// in src/api/index.ts via getOrderByNumber. This legacy bot module is
+		// kept for phase4 intent-recognizer tests only.
 		default:
 			return `How can I help you with our products today?`;
 	}
