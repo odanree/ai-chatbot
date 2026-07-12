@@ -7,7 +7,7 @@
     "dev": "node --loader ts-node/esm src/api/index.ts",
     "build:knowledge": "bun run src/knowledge/build.ts",
     "build": "tsc",
-    "vercel-build": "bun run build",
+    "vercel-build": "KNOWLEDGE_BUILD_STRICT=false bun run build:knowledge && bun run build",
     "start": "node dist/api/index.js",
     "test": "vitest run",
     "test:watch": "vitest watch",

@@ -10,7 +10,7 @@
  *   1. Beacon (private profile DB) — when BEACON_API_URL + BEACON_JWT are set.
  *      Fetches /api/profile/projects + /api/profile/experiences. Includes ALL
  *      profile entries — even ones not shown on the public portfolio site.
- *      Used by beacon-mcp's refresh_chatbot_rag tool.
+ *      Used by beacon-mcp's refresh_chatbot_rag tool and by the Vercel build.
  *
  *   2. Portfolio JSON snapshot — the fallback. Fetches PORTFOLIO_JSON_URL
  *      (defaults to https://danhle.net/data/portfolio.json). Only includes
@@ -21,13 +21,29 @@
  * project to Beacon without touching the portfolio site and still have the
  * chatbot know about it.
  *
- * NOT run at deploy time. `vercel-build` uses the committed `data/knowledge.json`
- * as-is. To refresh, run `beacon-mcp`'s `refresh_chatbot_rag` tool (rebuilds
- * against Beacon and commits the new index), or manually:
+ * ## Vercel build integration (ADR-021, phase 1)
+ *
+ * `vercel-build` runs this before `tsc` so the deployed knowledge index is
+ * always fresh from Beacon. To keep code-only deploys from failing when
+ * BEACON_JWT expires, the Vercel build sets `KNOWLEDGE_BUILD_STRICT=false`,
+ * which converts a failed rebuild into a warning-plus-exit-0 and preserves
+ * the committed data/knowledge.json.
+ *
+ * The strict/lenient toggle:
+ *
+ *   KNOWLEDGE_BUILD_STRICT=true   (default, and what local/manual runs use)
+ *     Any error (Beacon fetch failure, missing env var, embedding API 5xx)
+ *     is fatal — exit 1. Use this locally so you notice broken creds fast.
+ *
+ *   KNOWLEDGE_BUILD_STRICT=false  (Vercel build sets this)
+ *     On failure, log the error and exit 0 with a fallback notice. The
+ *     committed data/knowledge.json is preserved unchanged. Use this on
+ *     Vercel so a code-only deploy never breaks when BEACON_JWT is stale.
  *
  * Run:
- *   OPENAI_API_KEY=... bun run build:knowledge                     # portfolio.json
- *   BEACON_API_URL=... BEACON_JWT=... OPENAI_API_KEY=... bun run build:knowledge   # Beacon
+ *   OPENAI_API_KEY=... bun run build:knowledge                     # portfolio.json, strict
+ *   BEACON_API_URL=... BEACON_JWT=... OPENAI_API_KEY=... bun run build:knowledge   # Beacon, strict
+ *   KNOWLEDGE_BUILD_STRICT=false bun run build:knowledge            # lenient — Vercel pattern
  */
 
 import { mkdirSync, writeFileSync } from "node:fs";
@@ -511,7 +527,17 @@ async function main() {
 	console.log(`[rag-build] wrote ${OUT_PATH}`);
 }
 
+// Strict mode is the default. Vercel's `vercel-build` explicitly overrides
+// to `false` so a stale BEACON_JWT never breaks an otherwise-clean deploy.
+const STRICT = process.env.KNOWLEDGE_BUILD_STRICT !== "false";
+
 main().catch((e) => {
 	console.error("[rag-build] FAILED:", e);
-	process.exit(1);
+	if (STRICT) {
+		process.exit(1);
+	}
+	console.error(
+		"[rag-build] KNOWLEDGE_BUILD_STRICT=false — preserving committed data/knowledge.json and continuing",
+	);
+	process.exit(0);
 });
