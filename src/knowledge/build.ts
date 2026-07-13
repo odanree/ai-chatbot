@@ -78,6 +78,7 @@ interface NormalizedExperience {
 	location?: string;
 	achievements: string[];
 	technologies: string[];
+	talkingPoints?: string;
 }
 interface NormalizedSite {
 	name: string;
@@ -232,6 +233,7 @@ async function fetchFromBeacon(
 		description?: string;
 		tech_stack?: string[];
 		impact_metrics?: string;
+		talking_points?: string;
 	}>;
 
 	const projects: NormalizedProject[] = beaconProjects.map((p) => {
@@ -281,6 +283,7 @@ async function fetchFromBeacon(
 			location: e.location,
 			achievements,
 			technologies: e.tech_stack ?? [],
+			talkingPoints: e.talking_points,
 		};
 	});
 
@@ -322,6 +325,12 @@ function chunkExperience(e: NormalizedExperience): KnowledgeChunk {
 		parts.push(`Technologies: ${e.technologies.join(", ")}`);
 	parts.push("", "Achievements:");
 	for (const a of e.achievements) parts.push(`- ${a}`);
+	// Interview-only prose. The chatbot is conversational, so it opts into
+	// this narrative color (same rationale as projects). The resume path in
+	// job-search-pipeline structurally cannot read it.
+	if (e.talkingPoints) {
+		parts.push("", "Talking points:", e.talkingPoints);
+	}
 	return {
 		id: `experience:${e.id}`,
 		title: `${e.title} @ ${e.company}`,
