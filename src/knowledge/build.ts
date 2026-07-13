@@ -217,6 +217,7 @@ async function fetchFromBeacon(
 		tech_stack?: string[];
 		description?: string;
 		outcome?: string;
+		talking_points?: string;
 		start_date?: string;
 		end_date?: string;
 	}>;
@@ -234,10 +235,14 @@ async function fetchFromBeacon(
 	}>;
 
 	const projects: NormalizedProject[] = beaconProjects.map((p) => {
-		// Beacon uses `description` as prose + `outcome` for the results paragraph.
-		// Fold outcome into the description text and treat any bulleted lines in
-		// description as features so the chunker's "Key features" block still fires.
-		const combined = [p.description, p.outcome].filter(Boolean).join("\n\n");
+		// Beacon uses `description` as prose + `outcome` for the results paragraph
+		// + `talking_points` for interview-only narrative framing. The chatbot is
+		// a conversational surface, so we include all three (unlike the resume
+		// generator, which deliberately withholds talking_points). Read-path
+		// separation lives at the consumer, not at the row.
+		const combined = [p.description, p.outcome, p.talking_points]
+			.filter(Boolean)
+			.join("\n\n");
 		const bulletLines = combined
 			.split("\n")
 			.map((l) => l.trim())
